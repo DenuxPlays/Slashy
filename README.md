@@ -15,6 +15,7 @@ The docs are available [HERE](https://denux.gitbook.io/slashy/)
 ### How to run
 
 The bot just requires one `config.properties`:
-    - more exactly [HERE](https://denux.gitbook.io/slashy/)
+
+- more exactly [HERE](https://denux.gitbook.io/slashy/)
 
 A detailed Version can be found in the [Docs](https://denux.gitbook.io/slashy/how-to-run)
