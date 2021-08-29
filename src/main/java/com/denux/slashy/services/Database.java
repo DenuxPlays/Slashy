@@ -31,7 +31,7 @@ public class Database {
         PreparedStatement preparedStatement = con.prepareStatement("SELECT channel_id FROM logChannel WHERE guild_id = ?");
         preparedStatement.setString(1, guild_id);
         ResultSet resultSet = preparedStatement.executeQuery();
-        String channel_id = "You don't have a log channel.";
+        String channel_id = "0";
         while (resultSet.next()) {
             channel_id = resultSet.getString(1);
         }

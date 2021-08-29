@@ -1,10 +1,11 @@
 package com.denux.slashy;
-import com.denux.slashy.commands.Test;
+import com.denux.slashy.commands.moderation.Clear;
 import com.denux.slashy.services.Database;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.events.ReadyEvent;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.CommandData;
 import net.dv8tion.jda.api.requests.restaction.CommandListUpdateAction;
 
@@ -14,7 +15,12 @@ public class SlashCommands extends ListenerAdapter {
 
         CommandListUpdateAction updateAction = guild.updateCommands();
 
-        updateAction.addCommands(new CommandData("test", "Testing Things."));
+        //Testing
+        //updateAction.addCommands(new CommandData("test", "Testing Things."));
+
+        //Moderation
+        updateAction.addCommands(new CommandData("clear", "A command to clear messages in a channel.")
+                .addOption(OptionType.INTEGER, "amount", "The amount you want to clear.",true));
 
         updateAction.queue();
     }
@@ -27,10 +33,18 @@ public class SlashCommands extends ListenerAdapter {
     @Override
     public void onSlashCommand(SlashCommandEvent event) {
 
-        event.deferReply().setEphemeral(true).queue();
+        try {
 
-        switch (event.getName()) {
-            case "test" : new Test().onTest(event); break;
+            switch (event.getName()) {
+
+                //Testing
+
+                //Moderation
+                case "clear":
+                    new Clear().onClear(event); break;
+            }
+        } catch (Exception exception) {
+            event.getHook().sendMessage(exception.getMessage()).queue();
         }
 
     }
