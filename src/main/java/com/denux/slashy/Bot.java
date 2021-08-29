@@ -1,0 +1,21 @@
+package com.denux.slashy;
+import com.denux.slashy.properties.ConfigString;
+import net.dv8tion.jda.api.JDA;
+import net.dv8tion.jda.api.JDABuilder;
+import net.dv8tion.jda.api.requests.GatewayIntent;
+import net.dv8tion.jda.api.utils.MemberCachePolicy;
+import net.dv8tion.jda.api.utils.cache.CacheFlag;
+
+public class Bot {
+
+    public static void main(String[] args) throws Exception {
+
+        JDA jda = JDABuilder.createDefault(new ConfigString("token", "0").getValue())
+                .addEventListeners(new SlashCommands())
+                .enableIntents(GatewayIntent.getIntents(GatewayIntent.ALL_INTENTS))
+                .enableCache(CacheFlag.ACTIVITY)
+                .setMemberCachePolicy(MemberCachePolicy.ALL)
+                .build();
+
+    }
+}
