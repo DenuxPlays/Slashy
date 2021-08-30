@@ -7,7 +7,7 @@ public class Config {
     public static String OWNER_ID = "313671802809352194";
 
     //Bot Stuff
-    public static String  VERSION = "1.3";
+    public static String VERSION = "1.3";
     public static String FOOTER_MESSAGE = " | /roadmap | /vote";
 
     //Colors

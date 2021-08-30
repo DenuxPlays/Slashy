@@ -5,10 +5,20 @@ import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.utils.MemberCachePolicy;
 import net.dv8tion.jda.api.utils.cache.CacheFlag;
+import org.slf4j.LoggerFactory;
+
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 
 public class Bot {
 
+    public static ScheduledExecutorService asyncPool;
+
+    public static final org.slf4j.Logger logger = LoggerFactory.getLogger(Bot.class);
+
     public static void main(String[] args) throws Exception {
+
+        asyncPool = Executors.newScheduledThreadPool(4);
 
         JDA jda = JDABuilder.createDefault(new ConfigString("token", "0").getValue())
                 .addEventListeners(new SlashCommands())

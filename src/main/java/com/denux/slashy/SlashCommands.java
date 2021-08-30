@@ -1,4 +1,5 @@
 package com.denux.slashy;
+import com.denux.slashy.commands.moderation.Ban;
 import com.denux.slashy.commands.moderation.Clear;
 import com.denux.slashy.services.Database;
 import net.dv8tion.jda.api.entities.Guild;
@@ -16,12 +17,16 @@ public class SlashCommands extends ListenerAdapter {
         CommandListUpdateAction updateAction = guild.updateCommands();
 
         //Testing
-        //updateAction.addCommands(new CommandData("test", "Testing Things."));
+        updateAction.addCommands(new CommandData("test", "Testing Things."));
 
         //Moderation
         updateAction.addCommands(new CommandData("clear", "A command to clear messages in a channel.")
                 .addOption(OptionType.INTEGER, "amount", "The amount you want to clear.",true));
+        updateAction.addCommands(new CommandData("ban", "Will ban the member permanently.")
+                .addOption(OptionType.USER, "member", "This member will be banned.", true)
+                .addOption(OptionType.STRING, "reason", "Reason why the user was banned.", false));
 
+        //Adding commands to the guilds
         updateAction.queue();
     }
     @Override
@@ -33,19 +38,22 @@ public class SlashCommands extends ListenerAdapter {
     @Override
     public void onSlashCommand(SlashCommandEvent event) {
 
+        Bot.asyncPool.submit(() -> {
+
         try {
 
             switch (event.getName()) {
 
                 //Testing
+                case "test" : new Test().onTest(event); break;
 
                 //Moderation
-                case "clear":
-                    new Clear().onClear(event); break;
+                case "clear": new Clear().onClear(event); break;
+                case "ban" : new Ban().onBan(event); break;
             }
         } catch (Exception exception) {
             event.getHook().sendMessage(exception.getMessage()).queue();
         }
-
-    }
+    });
+}
 }

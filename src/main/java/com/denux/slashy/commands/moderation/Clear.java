@@ -37,7 +37,7 @@ public class Clear {
             }
             event.getTextChannel().deleteMessages(messages).complete();
             event.getHook().sendMessage("**" + messages.size() + " messages were deleted.**").queue();
-            String logChannelID = new Database().getLogChannel(Objects.requireNonNull(event.getGuild()).getId());
+            String logChannelID = new Database().getConfig(Objects.requireNonNull(event.getGuild()), "logChannel").getAsString();
             if (!logChannelID.equals("0")) {
                 var embed = new EmbedBuilder()
                         .setTitle("**"+messages.size()+" messages were deleted.**")

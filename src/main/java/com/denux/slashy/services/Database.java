@@ -1,44 +1,47 @@
 package com.denux.slashy.services;
+import ch.qos.logback.classic.Level;
+import ch.qos.logback.classic.Logger;
+import ch.qos.logback.classic.LoggerContext;
 import com.denux.slashy.properties.ConfigString;
-import com.mysql.cj.jdbc.MysqlDataSource;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.mongodb.MongoClient;
+import com.mongodb.MongoClientURI;
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoDatabase;
+import net.dv8tion.jda.api.entities.Guild;
+import org.bson.Document;
+import org.slf4j.LoggerFactory;
+import static com.mongodb.client.model.Filters.eq;
 
 public class Database {
 
-    public static Connection con;
+    public static MongoClient mongoClient;
 
     public void connectToDatabase() {
 
-        String[] database = new ConfigString("database", "0").getValue().split(":");
+        //Logging
+        LoggerContext loggerContext = (LoggerContext) LoggerFactory.getILoggerFactory();
+        Logger rootLogger = loggerContext.getLogger("org.mongodb.driver");
+        rootLogger.setLevel(Level.ERROR);
 
-        MysqlDataSource dataSource = new MysqlDataSource();
-        dataSource.setServerName(database[0]);
-        dataSource.setPort(Integer.parseInt(database[1]));
-        dataSource.setUser(database[2]);
-        dataSource.setPassword(database[3]);
-        dataSource.setDatabaseName(database[4]);
-        try {
-            con = dataSource.getConnection();
-        } catch (Exception exception) {
-            exception.printStackTrace();
-        }
+        //Connection to Database
+        MongoClientURI uri = new MongoClientURI(new ConfigString("mongodb", "0").getValue());
+        mongoClient = new MongoClient(uri);
     }
 
-    public String getLogChannel(String guild_id) {
-        try {
-        PreparedStatement preparedStatement = con.prepareStatement("SELECT channel_id FROM logChannel WHERE guild_id = ?");
-        preparedStatement.setString(1, guild_id);
-        ResultSet resultSet = preparedStatement.executeQuery();
-        String channel_id = "0";
-        while (resultSet.next()) {
-            channel_id = resultSet.getString(1);
-        }
-        return channel_id;
-        } catch (Exception exception) {
-            exception.printStackTrace();
-            return "Error";
-        }
+    public JsonElement getConfig(Guild guild, String path) {
+
+        MongoDatabase database = mongoClient.getDatabase("other");
+        MongoCollection<Document> collection = database.getCollection("config");
+
+        String doc = collection.find(eq("guild_id", guild.getId())).first().toJson();
+        String[] splittedPath = path.split("\\.");
+
+        JsonObject root = JsonParser.parseString(doc).getAsJsonObject();
+        for (int i = 0; i < splittedPath.length - 1; i++) root = root.get(splittedPath[i]).getAsJsonObject();
+        return root.get(splittedPath[splittedPath.length - 1]);
     }
 }
+
