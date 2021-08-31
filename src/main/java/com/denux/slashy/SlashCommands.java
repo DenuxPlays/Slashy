@@ -51,8 +51,12 @@ public class SlashCommands extends ListenerAdapter {
                 case "clear": new Clear().onClear(event); break;
                 case "ban" : new Ban().onBan(event); break;
             }
-        } catch (Exception exception) {
-            event.getHook().sendMessage(exception.getMessage()).queue();
+        } catch (NullPointerException exception) {
+            throw new NullPointerException("null");
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            event.getHook().sendMessage(e.getClass().getSimpleName()).queue();
         }
     });
 }

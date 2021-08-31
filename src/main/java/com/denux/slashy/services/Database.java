@@ -6,6 +6,7 @@ import com.denux.slashy.properties.ConfigString;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.google.gson.JsonPrimitive;
 import com.mongodb.MongoClient;
 import com.mongodb.MongoClientURI;
 import com.mongodb.client.MongoCollection;
@@ -14,6 +15,7 @@ import net.dv8tion.jda.api.entities.Guild;
 import org.bson.Document;
 import org.slf4j.LoggerFactory;
 import static com.mongodb.client.model.Filters.eq;
+import static com.mongodb.client.model.Filters.expr;
 
 public class Database {
 
@@ -32,16 +34,25 @@ public class Database {
     }
 
     public JsonElement getConfig(Guild guild, String path) {
+        //TODO fix return
+        try {
+            MongoDatabase database = mongoClient.getDatabase("other");
+            MongoCollection<Document> collection = database.getCollection("config");
 
-        MongoDatabase database = mongoClient.getDatabase("other");
-        MongoCollection<Document> collection = database.getCollection("config");
+            String doc = collection.find(eq("guild_id", guild.getId())).first().toJson();
+            System.out.println(doc);
+            String[] splittedPath = path.split("\\.");
 
-        String doc = collection.find(eq("guild_id", guild.getId())).first().toJson();
-        String[] splittedPath = path.split("\\.");
+            JsonObject root = JsonParser.parseString(doc).getAsJsonObject();
+            for (int i = 0; i < splittedPath.length - 1; i++) root = root.get(splittedPath[i]).getAsJsonObject();
 
-        JsonObject root = JsonParser.parseString(doc).getAsJsonObject();
-        for (int i = 0; i < splittedPath.length - 1; i++) root = root.get(splittedPath[i]).getAsJsonObject();
-        return root.get(splittedPath[splittedPath.length - 1]);
+            return root.get(splittedPath[splittedPath.length - 1]);
+        } catch (NullPointerException e) {
+            JsonElement j = new JsonPrimitive("0");
+            return j;
+        }
+
+
     }
 }
 

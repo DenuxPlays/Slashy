@@ -8,6 +8,7 @@ import net.dv8tion.jda.api.entities.MessageHistory;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 
+import java.sql.SQLOutput;
 import java.time.Instant;
 import java.util.List;
 import java.util.Objects;
@@ -37,19 +38,22 @@ public class Clear {
             }
             event.getTextChannel().deleteMessages(messages).complete();
             event.getHook().sendMessage("**" + messages.size() + " messages were deleted.**").queue();
+
+            var embed = new EmbedBuilder()
+                    .setTitle("**"+messages.size()+" messages were deleted.**")
+                    .setColor(Config.EMBED_GREY)
+                    .setTimestamp(Instant.now())
+                    .addField("Moderator:", event.getUser().getAsTag(), true)
+                    .addField("Channel:", event.getTextChannel().getAsMention(), true)
+                    .setFooter(event.getUser().getAsTag()+Config.FOOTER_MESSAGE, event.getUser().getAvatarUrl())
+                    .build();
+
             String logChannelID = new Database().getConfig(Objects.requireNonNull(event.getGuild()), "logChannel").getAsString();
             if (!logChannelID.equals("0")) {
-                var embed = new EmbedBuilder()
-                        .setTitle("**"+messages.size()+" messages were deleted.**")
-                        .setColor(Config.EMBED_GREY)
-                        .setTimestamp(Instant.now())
-                        .addField("Moderator:", event.getUser().getAsTag(), true)
-                        .addField("Channel:", event.getTextChannel().getAsMention(), true)
-                        .setFooter(event.getUser().getAsTag()+Config.FOOTER_MESSAGE, event.getUser().getAvatarUrl())
-                        .build();
                 TextChannel logChannel = event.getGuild().getTextChannelById(logChannelID);
-                assert logChannel != null;
                 logChannel.sendMessageEmbeds(embed).queue();
+            } else {
+                event.getTextChannel().sendMessageEmbeds(embed).queue();
             }
             }
         }
