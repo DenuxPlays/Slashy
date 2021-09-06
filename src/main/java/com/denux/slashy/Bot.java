@@ -22,12 +22,11 @@ public class Bot {
 
         asyncPool = Executors.newScheduledThreadPool(4);
 
-        jda = JDABuilder.createDefault(new ConfigString("token", "0").getValue())
+        jda = JDABuilder.createDefault(new ConfigString("token").getValue())
                 .addEventListeners(new SlashCommands())
                 .enableIntents(GatewayIntent.getIntents(GatewayIntent.ALL_INTENTS))
                 .enableCache(CacheFlag.ACTIVITY)
                 .setMemberCachePolicy(MemberCachePolicy.ALL)
                 .build();
-
     }
 }

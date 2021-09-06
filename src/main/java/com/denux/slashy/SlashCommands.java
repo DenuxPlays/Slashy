@@ -5,6 +5,7 @@ import com.denux.slashy.commands.moderation.Ban;
 import com.denux.slashy.commands.moderation.Clear;
 import com.denux.slashy.commands.moderation.Kick;
 import com.denux.slashy.services.Database;
+import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.events.ReadyEvent;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
@@ -12,6 +13,8 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.CommandData;
 import net.dv8tion.jda.api.requests.restaction.CommandListUpdateAction;
+
+import java.util.Date;
 
 public class SlashCommands extends ListenerAdapter {
 
@@ -50,26 +53,29 @@ public class SlashCommands extends ListenerAdapter {
         Bot.asyncPool.submit(() -> {
 
         try {
-
             switch (event.getName()) {
 
                 //Testing
-                case "test" : new Test().onTest(event); break;
+                case "test" -> new Test().onTest(event);
 
                 //Moderation
-                case "clear": new Clear().onClear(event); break;
-                case "ban" : new Ban().onBan(event); break;
-                case "kick" : new Kick().onKick(event); break;
+                case "clear" -> new Clear().onClear(event);
+                case "ban" -> new Ban().onBan(event);
+                case "kick" -> new Kick().onKick(event);
 
                 //Info
-                case "botinfo" : new Botinfo().onBotinfo(event); break;
+                case "botinfo" -> new Botinfo().onBotinfo(event);
             }
-        } catch (NullPointerException exception) {
-            throw new NullPointerException("null");
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-            event.getHook().sendMessage(e.getClass().getSimpleName()).queue();
+
+        } catch (Exception e) {
+
+            var embed = new EmbedBuilder()
+                    .setAuthor(e.getClass().getSimpleName(), null, Bot.jda.getSelfUser().getEffectiveAvatarUrl())
+                    .setDescription("```" + e.getMessage() + "```")
+                    .setTimestamp(new Date().toInstant())
+                    .build();
+
+            event.getHook().sendMessageEmbeds(embed).setEphemeral(true).queue();
         }
     });
 }

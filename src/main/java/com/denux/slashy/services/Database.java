@@ -29,7 +29,7 @@ public class Database {
         rootLogger.setLevel(Level.ERROR);
 
         //Connection to Database
-        MongoClientURI uri = new MongoClientURI(new ConfigString("mongodb", "0").getValue());
+        MongoClientURI uri = new MongoClientURI(new ConfigString("mongodb").getValue());
         mongoClient = new MongoClient(uri);
     }
 
@@ -40,13 +40,12 @@ public class Database {
             MongoCollection<Document> collection = database.getCollection("config");
 
             String doc = collection.find(eq("guild_id", guild.getId())).first().toJson();
-            System.out.println(doc);
-            String[] splittedPath = path.split("\\.");
+            String[] split = path.split("\\.");
 
             JsonObject root = JsonParser.parseString(doc).getAsJsonObject();
-            for (int i = 0; i < splittedPath.length - 1; i++) root = root.get(splittedPath[i]).getAsJsonObject();
+            for (int i = 0; i < split.length - 1; i++) root = root.get(split[i]).getAsJsonObject();
 
-            return root.get(splittedPath[splittedPath.length - 1]);
+            return root.get(split[split.length - 1]);
         } catch (NullPointerException e) {
             JsonElement j = new JsonPrimitive("0");
             return j;
