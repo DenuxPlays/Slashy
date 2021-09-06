@@ -2,6 +2,7 @@ package com.denux.slashy;
 
 import com.denux.slashy.commands.info.Botinfo;
 import com.denux.slashy.commands.info.Serverinfo;
+import com.denux.slashy.commands.info.Userinfo;
 import com.denux.slashy.commands.moderation.Ban;
 import com.denux.slashy.commands.moderation.Clear;
 import com.denux.slashy.commands.moderation.Kick;
@@ -39,6 +40,8 @@ public class SlashCommands extends ListenerAdapter {
         //Info
         updateAction.addCommands(new CommandData("botinfo", "Gives you the general information about the bot."));
         updateAction.addCommands(new CommandData("serverinfo", "Gives you the general information about the server."));
+        updateAction.addCommands(new CommandData("userinfo", "Gives you a few information about a user.")
+                .addOption(OptionType.USER, "member", "Member you want the information from.", true));
 
         //Adding commands to the guilds
         updateAction.queue();
@@ -68,6 +71,7 @@ public class SlashCommands extends ListenerAdapter {
                 //Info
                 case "botinfo" -> new Botinfo().onBotinfo(event);
                 case "serverinfo" -> new Serverinfo().onServerinfo(event);
+                case "userinfo" -> new Userinfo().onUserinfo(event);
             }
 
         } catch (Exception e) {
