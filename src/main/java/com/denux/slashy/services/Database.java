@@ -40,7 +40,6 @@ public class Database {
             MongoCollection<Document> collection = database.getCollection("config");
 
             String doc = collection.find(eq("guild_id", guild.getId())).first().toJson();
-            System.out.println(doc);
             String[] splittedPath = path.split("\\.");
 
             JsonObject root = JsonParser.parseString(doc).getAsJsonObject();
@@ -48,6 +47,7 @@ public class Database {
 
             return root.get(splittedPath[splittedPath.length - 1]);
         } catch (NullPointerException e) {
+            //TODO return null
             JsonElement j = new JsonPrimitive("0");
             return j;
         }

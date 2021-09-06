@@ -54,15 +54,17 @@ public class SlashCommands extends ListenerAdapter {
             switch (event.getName()) {
 
                 //Testing
-                case "test" : new Test().onTest(event); break;
+                case "test" -> new Test().onTest(event);
+
 
                 //Moderation
-                case "clear": new Clear().onClear(event); break;
-                case "ban" : new Ban().onBan(event); break;
-                case "kick" : new Kick().onKick(event); break;
+                case "clear" -> new Clear().onClear(event);
+                case "ban" -> new Ban().onBan(event);
+                case "kick" -> new Kick().onKick(event);
+
 
                 //Info
-                case "botinfo" : new Botinfo().onBotinfo(event); break;
+                case "botinfo" -> new Botinfo().onBotinfo(event);
             }
         } catch (NullPointerException exception) {
             throw new NullPointerException("null");
