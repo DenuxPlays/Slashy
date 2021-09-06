@@ -10,7 +10,7 @@ The docs are available [HERE](https://denux.gitbook.io/slashy/)
 
 ### Requirements
 
-- Java 11 or higher
+- Java 16 or higher
 
 ### How to run
 
