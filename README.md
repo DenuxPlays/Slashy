@@ -1,4 +1,4 @@
-## Slashy
+## Slashy 
 
 ...is a Discord Moderation Bot using Discords Slash Commands.
 
