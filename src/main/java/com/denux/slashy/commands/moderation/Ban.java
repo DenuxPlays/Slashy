@@ -47,23 +47,21 @@ public class Ban {
                 .addField("Reason", "```"+reason+"```", false)
                 .setFooter(event.getUser().getAsTag()+Config.FOOTER_MESSAGE, event.getUser().getAvatarUrl())
                 .build();
-        try {
+        if (member.getUser().hasPrivateChannel()) {
             member.getUser().openPrivateChannel().complete()
                     .sendMessageEmbeds(embed).queue();
         }
-        catch (Exception exception) {
-            Bot.logger.warn("Cannot send messages to this user");
+        else Bot.logger.warn("Cannot send messages to this user");
+
+        member.ban(1, reason).queue();
+        String logChannelID = new Database().getConfig(event.getGuild(), "logChannel").getAsString();
+        if (!logChannelID.equals("0")) {
+            TextChannel logChannel = event.getGuild().getTextChannelById(logChannelID);
+            logChannel.sendMessageEmbeds(embed).queue();
+        } else {
+            event.getTextChannel().sendMessageEmbeds(embed).queue();
+            event.getHook().sendMessage("Done").queue();
         }
-        finally {
-            member.ban(1, reason).queue();
-            String logChannelID = new Database().getConfig(event.getGuild(), "logChannel").getAsString();
-            if (!logChannelID.equals("0")) {
-                TextChannel logChannel = event.getGuild().getTextChannelById(logChannelID);
-                logChannel.sendMessageEmbeds(embed).queue();
-            } else {
-                event.getTextChannel().sendMessageEmbeds(embed).queue();
-                event.getHook().sendMessage("Done").queue();
-            }
-        }
+
     }
 }
