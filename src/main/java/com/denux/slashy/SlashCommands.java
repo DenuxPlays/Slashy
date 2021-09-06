@@ -3,10 +3,7 @@ package com.denux.slashy;
 import com.denux.slashy.commands.info.Botinfo;
 import com.denux.slashy.commands.info.Serverinfo;
 import com.denux.slashy.commands.info.Userinfo;
-import com.denux.slashy.commands.moderation.Ban;
-import com.denux.slashy.commands.moderation.Clear;
-import com.denux.slashy.commands.moderation.Kick;
-import com.denux.slashy.commands.moderation.Slowdown;
+import com.denux.slashy.commands.moderation.*;
 import com.denux.slashy.services.Database;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Guild;
@@ -39,6 +36,9 @@ public class SlashCommands extends ListenerAdapter {
                 .addOption(OptionType.STRING, "reason", "Reason why the member was kicked.", false));
         updateAction.addCommands(new CommandData("slowdown", "Sets the slow mode for a channel.")
                 .addOption(OptionType.INTEGER, "seconds", "How long the slow mode would be.", true));
+        updateAction.addCommands(new CommandData("lockdown", "Locks the channel for normal users.")
+                .addOption(OptionType.STRING, "reason", "Reason why the channel is under lockdown.", false));
+        updateAction.addCommands(new CommandData("unlockdown", "Unlocks the channel for normal users."));
 
         //Info
         updateAction.addCommands(new CommandData("botinfo", "Gives you the general information about the bot."));
@@ -71,6 +71,8 @@ public class SlashCommands extends ListenerAdapter {
                 case "ban" -> new Ban().onBan(event);
                 case "kick" -> new Kick().onKick(event);
                 case "slowdown" -> new Slowdown().onSlowdown(event);
+                case "lockdown" -> new Lockdown().onLockdown(event);
+                case "unlockdown" -> new UnLockdown().onUnLockdown(event);
 
                 //Info
                 case "botinfo" -> new Botinfo().onBotinfo(event);
