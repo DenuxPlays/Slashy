@@ -14,13 +14,15 @@ public class Bot {
 
     public static ScheduledExecutorService asyncPool;
 
+    public static JDA jda;
+
     public static final org.slf4j.Logger logger = LoggerFactory.getLogger(Bot.class);
 
     public static void main(String[] args) throws Exception {
 
         asyncPool = Executors.newScheduledThreadPool(4);
 
-        JDA jda = JDABuilder.createDefault(new ConfigString("token", "0").getValue())
+        jda = JDABuilder.createDefault(new ConfigString("token", "0").getValue())
                 .addEventListeners(new SlashCommands())
                 .enableIntents(GatewayIntent.getIntents(GatewayIntent.ALL_INTENTS))
                 .enableCache(CacheFlag.ACTIVITY)

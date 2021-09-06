@@ -23,7 +23,7 @@ public class Clear {
 
         if (!Objects.requireNonNull(event.getMember()).hasPermission(Permission.MESSAGE_MANAGE)) {
 
-            event.getHook().sendMessage("**You don't have the manage message permission.**").queue();
+            event.getHook().sendMessage("**You don't have the `manage message` permission.**").queue();
             return;
         }
 
