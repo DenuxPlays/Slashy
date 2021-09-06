@@ -6,6 +6,7 @@ import com.denux.slashy.commands.info.Userinfo;
 import com.denux.slashy.commands.moderation.Ban;
 import com.denux.slashy.commands.moderation.Clear;
 import com.denux.slashy.commands.moderation.Kick;
+import com.denux.slashy.commands.moderation.Slowdown;
 import com.denux.slashy.services.Database;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Guild;
@@ -36,6 +37,8 @@ public class SlashCommands extends ListenerAdapter {
         updateAction.addCommands(new CommandData("kick", "Kicks a member from the discord.")
                 .addOption(OptionType.USER, "member", "This member will be kicked.", true)
                 .addOption(OptionType.STRING, "reason", "Reason why the member was kicked.", false));
+        updateAction.addCommands(new CommandData("slowdown", "Sets the slow mode for a channel.")
+                .addOption(OptionType.INTEGER, "seconds", "How long the slow mode would be.", true));
 
         //Info
         updateAction.addCommands(new CommandData("botinfo", "Gives you the general information about the bot."));
@@ -67,6 +70,7 @@ public class SlashCommands extends ListenerAdapter {
                 case "clear" -> new Clear().onClear(event);
                 case "ban" -> new Ban().onBan(event);
                 case "kick" -> new Kick().onKick(event);
+                case "slowdown" -> new Slowdown().onSlowdown(event);
 
                 //Info
                 case "botinfo" -> new Botinfo().onBotinfo(event);
