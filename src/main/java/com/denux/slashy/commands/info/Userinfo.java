@@ -15,8 +15,10 @@ public class Userinfo {
 
         event.deferReply().setEphemeral(true).queue();
 
+        //Gets the member from the option we created in the SlashCommands Class
         Member member = event.getOption("member").getAsMember();
 
+        //Formats the time
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("EEEE, dd.MM.yyyy H:mm:s", Locale.ENGLISH);
 
         var embed = new EmbedBuilder()

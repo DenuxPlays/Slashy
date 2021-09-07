@@ -21,6 +21,7 @@ public class Lockdown {
         OptionMapping option = event.getOption("reason");
         String reason = option == null ? "None" : option.getAsString();
 
+        //Gets the Permission from the channel and sets it to "deny"
         EnumSet<Permission> readPerms = EnumSet.of(Permission.MESSAGE_WRITE);
         event.getTextChannel().putPermissionOverride(event.getGuild().getPublicRole()).deny(readPerms).queue();
 

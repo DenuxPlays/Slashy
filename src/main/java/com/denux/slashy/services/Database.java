@@ -15,15 +15,15 @@ import net.dv8tion.jda.api.entities.Guild;
 import org.bson.Document;
 import org.slf4j.LoggerFactory;
 import static com.mongodb.client.model.Filters.eq;
-import static com.mongodb.client.model.Filters.expr;
 
 public class Database {
 
     public static MongoClient mongoClient;
 
+    //Creates a connection to the MongoDB Database
     public void connectToDatabase() {
 
-        //Logging
+        //Logging | Gives an error if something goes wrong
         LoggerContext loggerContext = (LoggerContext) LoggerFactory.getILoggerFactory();
         Logger rootLogger = loggerContext.getLogger("org.mongodb.driver");
         rootLogger.setLevel(Level.ERROR);
@@ -34,7 +34,7 @@ public class Database {
     }
 
     public JsonElement getConfig(Guild guild, String path) {
-        //TODO fix return
+        //TODO return null
         try {
             MongoDatabase database = mongoClient.getDatabase("other");
             MongoCollection<Document> collection = database.getCollection("config");

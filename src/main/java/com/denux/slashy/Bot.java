@@ -20,8 +20,10 @@ public class Bot {
 
     public static void main(String[] args) throws Exception {
 
+        //Part 1 for async commands
         asyncPool = Executors.newScheduledThreadPool(4);
 
+        //Creating the bot instance
         jda = JDABuilder.createDefault(new ConfigString("token").getValue())
                 .addEventListeners(new SlashCommands())
                 .enableIntents(GatewayIntent.getIntents(GatewayIntent.ALL_INTENTS))

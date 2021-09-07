@@ -2,7 +2,6 @@ package com.denux.slashy.commands.moderation;
 
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
-import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 
 import java.util.EnumSet;
 

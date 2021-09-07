@@ -20,6 +20,7 @@ public class SlashCommands extends ListenerAdapter {
 
     void registerSlashCommands(Guild guild) {
 
+        //Adds slash commands to all the guilds
         CommandListUpdateAction updateAction = guild.updateCommands();
 
         //Testing
@@ -46,20 +47,28 @@ public class SlashCommands extends ListenerAdapter {
         updateAction.addCommands(new CommandData("userinfo", "Gives you a few information about a user.")
                 .addOption(OptionType.USER, "member", "Member you want the information from.", true));
 
-        //Adding commands to the guilds
         updateAction.queue();
     }
     @Override
     public void onReady(ReadyEvent event) {
+
+        //Connecting to MongoDB when the bot is ready
         new Database().connectToDatabase();
+
+        //Adding commands to the guilds
         for(var guild : event.getJDA().getGuilds()) registerSlashCommands(guild);
+
+        //Printing via the Logging Plugin a message to the console
+        Bot.logger.info("Successfully connected to the Database.");
     }
 
     @Override
     public void onSlashCommand(SlashCommandEvent event) {
 
+        //Part 2 for async commands
         Bot.asyncPool.submit(() -> {
 
+        //Try catch block for error handling
         try {
             switch (event.getName()) {
 
@@ -80,8 +89,10 @@ public class SlashCommands extends ListenerAdapter {
                 case "userinfo" -> new Userinfo().onUserinfo(event);
             }
 
+        //Throwing an exception for the Error handling embed
         } catch (Exception e) {
 
+            //Error handling embed
             var embed = new EmbedBuilder()
                     .setAuthor(e.getClass().getSimpleName(), null, Bot.jda.getSelfUser().getEffectiveAvatarUrl())
                     .setDescription("```" + e.getMessage() + "```")

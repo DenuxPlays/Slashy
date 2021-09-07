@@ -21,15 +21,18 @@ public class Ban {
 
         Member member = event.getOption("member").getAsMember();
 
+        //Gets the option reason from the option we added in the SlashCommands Class
         OptionMapping option = event.getOption("reason");
         String reason = option == null ? "None" : option.getAsString();
 
+        //Checks the permissions from the member
         if (!event.getMember().hasPermission(Permission.BAN_MEMBERS)) {
 
             event.getHook().sendMessage("**You don't have the `ban members` permission.**").queue();
             return;
         }
 
+        //Checks the permissions from the member you want to ban
         if (member.hasPermission(Permission.BAN_MEMBERS)) {
 
             event.getHook().sendMessage("**You can't ban an administrator/moderator.**").queue();
@@ -54,6 +57,7 @@ public class Ban {
         else Bot.logger.warn("Cannot send messages to this user");
 
         member.ban(1, reason).queue();
+
         String logChannelID = new Database().getConfig(event.getGuild(), "logChannel").getAsString();
         if (!logChannelID.equals("0")) {
             TextChannel logChannel = event.getGuild().getTextChannelById(logChannelID);

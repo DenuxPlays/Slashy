@@ -14,6 +14,7 @@ public class Serverinfo {
 
         event.deferReply().setEphemeral(true).queue();
 
+        //Formats the time
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("EEEE, dd.MM.yyyy H:mm:s", Locale.ENGLISH);
 
         var embed = new EmbedBuilder()

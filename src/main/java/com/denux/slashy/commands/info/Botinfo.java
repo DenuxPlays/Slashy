@@ -11,6 +11,7 @@ public class Botinfo {
 
     public void onBotinfo(SlashCommandEvent event) {
 
+        //Makes the "Slashy is thinking" and when its true its only visible for the User who sent the command
         event.deferReply().setEphemeral(true).queue();
 
         var embed = new EmbedBuilder()
