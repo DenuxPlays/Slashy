@@ -8,6 +8,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonPrimitive;
+import com.mongodb.BasicDBObject;
 import com.mongodb.MongoClient;
 import com.mongodb.MongoClientURI;
 import com.mongodb.client.MongoCollection;
@@ -35,6 +36,15 @@ public class Database {
         mongoClient = new MongoClient(uri);
     }
 
+    /*
+    Available paths:
+    guildID
+    logChannel
+    muteRole
+    serverLock
+    starboardChannel
+    warnLimit
+     */
     public JsonElement getConfig(Guild guild, String path) {
 
         if (ifGuildDocExists(guild)) {
@@ -85,7 +95,7 @@ public class Database {
         //Creating the Database structure
         if (!ifGuildDocExists(guild)) {
             Document doc = new Document()
-                    .append("guild_id", guild.getId())
+                    .append("guildID", guild.getId())
                     .append("logChannel", "0")
                     .append("muteRole", "0")
                     .append("serverLock", false)
@@ -98,6 +108,17 @@ public class Database {
             Bot.logger.info("Creating a Config with the guild id: "+guild.getId());
         }
         else Bot.logger.error("Guild already has a config.");
+    }
+
+    //Sets |edits a Database Entry
+    public void setDatabaseEntry(Guild guild, String path, Object newValue) {
+
+        BasicDBObject setData = new BasicDBObject(path, newValue);
+        BasicDBObject update = new BasicDBObject("$set", setData);
+
+        Document query = new Document("guildID", guild.getId());
+
+        mongoClient.getDatabase("other").getCollection("config").updateOne(query, update);
     }
 }
 

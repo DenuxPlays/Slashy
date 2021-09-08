@@ -4,23 +4,27 @@ import com.denux.slashy.commands.info.Botinfo;
 import com.denux.slashy.commands.info.Serverinfo;
 import com.denux.slashy.commands.info.Userinfo;
 import com.denux.slashy.commands.moderation.*;
+import com.denux.slashy.services.Config;
 import com.denux.slashy.services.Database;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.ChannelType;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.events.ReadyEvent;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.CommandData;
+import net.dv8tion.jda.api.interactions.commands.build.SubcommandData;
 import net.dv8tion.jda.api.requests.restaction.CommandListUpdateAction;
 
 import java.util.Date;
 
 public class SlashCommands extends ListenerAdapter {
 
-    void registerSlashCommands(Guild guild) {
+     public void registerSlashCommands(Guild guild) {
 
         //Adds slash commands to all the guilds
+         //TODO global commands
         CommandListUpdateAction updateAction = guild.updateCommands();
 
         //Testing
@@ -47,6 +51,16 @@ public class SlashCommands extends ListenerAdapter {
         updateAction.addCommands(new CommandData("userinfo", "Gives you a few information about a user.")
                 .addOption(OptionType.USER, "member", "Member you want the information from.", true));
 
+        //Config subcommand
+        updateAction.addCommands(new CommandData("config", "Configuration commands.")
+                .addSubcommands(new SubcommandData("setlogchannel", "Sets the LogChannel ID for your Server.")
+                        .addOption(OptionType.CHANNEL, "logchannel", "The Channel you want to be the logChannel.", true)
+                        .addOption(OptionType.BOOLEAN, "disabled", "Set this to true if you want to remove the logchannel", false))
+                .addSubcommands(new SubcommandData("setmuterole", "Sets the Muterole ID for your server.")
+                        .addOption(OptionType.ROLE, "muterole", "The role you want to be the muterole", true)
+                        .addOption(OptionType.BOOLEAN, "disabled", "Set this to true if you want to remove the mutRole", false)));
+
+
         updateAction.queue();
     }
     @Override
@@ -54,12 +68,11 @@ public class SlashCommands extends ListenerAdapter {
 
         //Connecting to MongoDB when the bot is ready
         new Database().connectToDatabase();
+        Bot.logger.info("Successfully connected to the Database.");
 
         //Adding commands to the guilds
         for(var guild : event.getJDA().getGuilds()) registerSlashCommands(guild);
-
-        //Printing via the Logging Plugin a message to the console
-        Bot.logger.info("Successfully connected to the Database.");
+        Bot.logger.info("SlashCommands loaded");
     }
 
     @Override
@@ -67,6 +80,9 @@ public class SlashCommands extends ListenerAdapter {
 
         //Part 2 for async commands
         Bot.asyncPool.submit(() -> {
+
+            //Returns when the command is used in a DM Channel
+            if (event.getChannelType() == ChannelType.PRIVATE) return;
 
         //Try catch block for error handling
         try {
@@ -87,6 +103,9 @@ public class SlashCommands extends ListenerAdapter {
                 case "botinfo" -> new Botinfo().onBotinfo(event);
                 case "serverinfo" -> new Serverinfo().onServerinfo(event);
                 case "userinfo" -> new Userinfo().onUserinfo(event);
+
+                //Adding the config subCommands
+                case "config" -> new com.denux.slashy.commands.configuration.Config().execute(event);
             }
 
         //Throwing an exception for the Error handling embed
@@ -94,6 +113,7 @@ public class SlashCommands extends ListenerAdapter {
 
             //Error handling embed
             var embed = new EmbedBuilder()
+                    .setColor(Config.RED)
                     .setAuthor(e.getClass().getSimpleName(), null, Bot.jda.getSelfUser().getEffectiveAvatarUrl())
                     .setDescription("```" + e.getMessage() + "```")
                     .setTimestamp(new Date().toInstant())
