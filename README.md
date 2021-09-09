@@ -19,3 +19,6 @@ The bot just requires one `config.properties`:
 - more exactly [HERE](https://denux.gitbook.io/slashy/)
 
 A detailed Version can be found in the [Docs](https://denux.gitbook.io/slashy/how-to-run)
+
+### Java Discord
+Join one of the biggest Java Discord Servers supported by JetBrains and NordVPN at https://javadiscord.net!
