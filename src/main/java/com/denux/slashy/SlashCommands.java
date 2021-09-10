@@ -53,6 +53,10 @@ public class SlashCommands extends ListenerAdapter {
 
         //Config subcommand
         updateAction.addCommands(new CommandData("config", "Configuration commands.")
+                //SetWarnLimit subcommand
+                .addSubcommands(new SubcommandData("setwarnlimit", "Sets the warn limit for your Server.")
+                        .addOption(OptionType.INTEGER, "limit", "The max amount of warns a User can have before getting banned.", true)
+                        .addOption(OptionType.BOOLEAN, "disabled", "Disables the warn limit for your Server.", false))
                 //SetStarboardChannel subcommand
                 .addSubcommands(new SubcommandData("setstarboardchannel", "Sets the Starboard Channel for your Server and activates it.")
                         .addOption(OptionType.CHANNEL, "starboardchannel", "The Channel you want to be the Starboard Channel.", true)
