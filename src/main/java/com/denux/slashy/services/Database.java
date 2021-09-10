@@ -44,6 +44,7 @@ public class Database {
     serverLock
     starboardChannel
     warnLimit
+    reportChannel
      */
     public JsonElement getConfig(Guild guild, String path) {
 
@@ -77,7 +78,7 @@ public class Database {
         MongoDatabase database = mongoClient.getDatabase("other");
         MongoCollection<Document> collection = database.getCollection("config");
 
-        Document doc = collection.find(eq("guild_id", guild.getId())).first();
+        Document doc = collection.find(eq("guildID", guild.getId())).first();
 
         if (doc == null) return false;
 
@@ -86,7 +87,7 @@ public class Database {
     }
 
     //Creating the Config for a guild who doesn't have one
-    public void createConfig(Guild guild) {
+    private void createConfig(Guild guild) {
 
         //Connection to the cluster
         MongoDatabase database = mongoClient.getDatabase("other");
@@ -114,12 +115,26 @@ public class Database {
     //Sets |edits a Database Entry
     public void setDatabaseEntry(Guild guild, String path, Object newValue) {
 
-        BasicDBObject setData = new BasicDBObject(path, newValue);
-        BasicDBObject update = new BasicDBObject("$set", setData);
+        if (ifGuildDocExists(guild)) {
+            BasicDBObject setData = new BasicDBObject(path, newValue);
+            BasicDBObject update = new BasicDBObject("$set", setData);
 
-        Document query = new Document("guildID", guild.getId());
+            Document query = new Document("guildID", guild.getId());
 
-        mongoClient.getDatabase("other").getCollection("config").updateOne(query, update);
+            mongoClient.getDatabase("other").getCollection("config").updateOne(query, update);
+        }
+       else {
+
+           createConfig(guild);
+           Bot.logger.warn("Creating a Config for the Guild:"+guild.getId()+" | setDatabaseEntry");
+
+           BasicDBObject setData = new BasicDBObject(path, newValue);
+           BasicDBObject update = new BasicDBObject("$set", setData);
+
+           Document query = new Document("guildID", guild.getId());
+
+           mongoClient.getDatabase("other").getCollection("config").updateOne(query, update);
+        }
     }
 }
 
