@@ -1,9 +1,6 @@
 package com.denux.slashy.commands.configuration;
 
-import com.denux.slashy.commands.configuration.subcommands.SetServerLock;
-import com.denux.slashy.commands.configuration.subcommands.SetLogChannel;
-import com.denux.slashy.commands.configuration.subcommands.SetMuteRole;
-import com.denux.slashy.commands.configuration.subcommands.SetReportChannel;
+import com.denux.slashy.commands.configuration.subcommands.*;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 
 import java.util.HashMap;
@@ -23,6 +20,7 @@ public class Config implements ConfigCommandHandler{
         subCommands.put("setlogchannel", new SetLogChannel());
         subCommands.put("setreportchannel", new SetReportChannel());
         subCommands.put("setserverlock", new SetServerLock());
+        subCommands.put("setstarboardchannel", new SetStarboardChannel());
     }
 
     @Override

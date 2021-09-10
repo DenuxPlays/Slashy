@@ -53,6 +53,10 @@ public class SlashCommands extends ListenerAdapter {
 
         //Config subcommand
         updateAction.addCommands(new CommandData("config", "Configuration commands.")
+                //SetStarboardChannel subcommand
+                .addSubcommands(new SubcommandData("setstarboardchannel", "Sets the Starboard Channel for your Server and activates it.")
+                        .addOption(OptionType.CHANNEL, "starboardchannel", "The Channel you want to be the Starboard Channel.", true)
+                        .addOption(OptionType.BOOLEAN, "disabled", "Disables the Starboard.", false))
                 //ServerLock subcommand
                 .addSubcommands(new SubcommandData("setserverlock", "Locks or unlocks the server so that nobody can join.")
                         .addOption(OptionType.BOOLEAN, "status", "Set this too true if you want to lock the server.", true))
