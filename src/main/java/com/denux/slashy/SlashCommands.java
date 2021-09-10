@@ -53,9 +53,15 @@ public class SlashCommands extends ListenerAdapter {
 
         //Config subcommand
         updateAction.addCommands(new CommandData("config", "Configuration commands.")
+                //SetReportChannel subcommand
+                .addSubcommands(new SubcommandData("setreportchannel", "Sets the ReportChannel ID for your Server.")
+                        .addOption(OptionType.CHANNEL, "reportchannel", "The Channel you want to be the ReportChannel.", true)
+                        .addOption(OptionType.BOOLEAN, "disabled", "Set this to true if you want to remove the ReportChannel", false))
+                //SetLogChannel subcommand
                 .addSubcommands(new SubcommandData("setlogchannel", "Sets the LogChannel ID for your Server.")
                         .addOption(OptionType.CHANNEL, "logchannel", "The Channel you want to be the logChannel.", true)
                         .addOption(OptionType.BOOLEAN, "disabled", "Set this to true if you want to remove the logchannel", false))
+                //SetMuteRole subcommand
                 .addSubcommands(new SubcommandData("setmuterole", "Sets the Muterole ID for your server.")
                         .addOption(OptionType.ROLE, "muterole", "The role you want to be the muterole", true)
                         .addOption(OptionType.BOOLEAN, "disabled", "Set this to true if you want to remove the mutRole", false)));

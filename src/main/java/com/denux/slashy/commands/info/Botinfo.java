@@ -20,10 +20,11 @@ public class Botinfo {
                 .setTimestamp(Instant.now())
                 .setThumbnail(Bot.jda.getSelfUser().getAvatarUrl())
                 .addField("Name","`" + Bot.jda.getSelfUser().getAsTag() + "`", false)
-                .addField("Library", "` JDA (Java) `", false)
+                .addField("Library", "`JDA (Java)`", false)
                 .addField("Numbers of Servers the Bot is online", "`" + Bot.jda.getGuilds().size() + "`", false)
                 .addField("Users", "`" + Bot.jda.getUsers().size() + "`", false)
                 .addField("Version", "`" + Config.VERSION + "`", true)
+                .addField("Bot Owner", "`"+event.getJDA().retrieveUserById(Config.OWNER_ID).complete().getAsTag()+"`", false)
                 .setFooter(event.getMember().getUser().getAsTag() + Config.FOOTER_MESSAGE, event.getMember().getUser().getAvatarUrl())
                 .build();
 

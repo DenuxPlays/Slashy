@@ -100,7 +100,8 @@ public class Database {
                     .append("muteRole", "0")
                     .append("serverLock", false)
                     .append("starboardChannel", "0")
-                    .append("warnLimit", "0");
+                    .append("warnLimit", "0")
+                    .append("reportChannel", "0");
 
             collection.insertOne(doc);
 
