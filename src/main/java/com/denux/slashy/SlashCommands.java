@@ -53,6 +53,9 @@ public class SlashCommands extends ListenerAdapter {
 
         //Config subcommand
         updateAction.addCommands(new CommandData("config", "Configuration commands.")
+                //ServerLock subcommand
+                .addSubcommands(new SubcommandData("setserverlock", "Locks or unlocks the server so that nobody can join.")
+                        .addOption(OptionType.BOOLEAN, "status", "Set this too true if you want to lock the server.", true))
                 //SetReportChannel subcommand
                 .addSubcommands(new SubcommandData("setreportchannel", "Sets the ReportChannel ID for your Server.")
                         .addOption(OptionType.CHANNEL, "reportchannel", "The Channel you want to be the ReportChannel.", true)
