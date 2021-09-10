@@ -53,6 +53,8 @@ public class SlashCommands extends ListenerAdapter {
 
         //Config subcommand
         updateAction.addCommands(new CommandData("config", "Configuration commands.")
+                //List subcommand
+                .addSubcommands(new SubcommandData("list", "Gives you a overview of your settings."))
                 //SetWarnLimit subcommand
                 .addSubcommands(new SubcommandData("setwarnlimit", "Sets the warn limit for your Server.")
                         .addOption(OptionType.INTEGER, "limit", "The max amount of warns a User can have before getting banned.", true)

@@ -55,7 +55,7 @@ public class Database {
             MongoCollection<Document> collection = database.getCollection("config");
 
             //Getting the doc by searching after the guild id
-            String doc = collection.find(eq("guild_id", guild.getId())).first().toJson();
+            String doc = collection.find(eq("guildID", guild.getId())).first().toJson();
             String[] split = path.split("\\.");
 
             JsonObject root = JsonParser.parseString(doc).getAsJsonObject();

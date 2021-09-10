@@ -29,7 +29,7 @@ public class SetReportChannel implements ConfigCommandHandler {
 
             new Database().setDatabaseEntry(event.getGuild(), "reportChannel", reportChannel.getId());
 
-            event.getHook().sendMessage("**The channel: `"+reportChannel.getName()+"` is now your reportChannel.").queue();
+            event.getHook().sendMessage("**The channel: `"+reportChannel.getName()+"` is now your reportChannel.**").queue();
         }
         else {
 

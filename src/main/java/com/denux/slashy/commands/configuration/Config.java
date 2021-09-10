@@ -22,6 +22,7 @@ public class Config implements ConfigCommandHandler{
         subCommands.put("setserverlock", new SetServerLock());
         subCommands.put("setstarboardchannel", new SetStarboardChannel());
         subCommands.put("setwarnlimit", new SetWarnLimit());
+        subCommands.put("list", new List());
     }
 
     @Override
