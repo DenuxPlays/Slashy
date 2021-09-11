@@ -44,6 +44,9 @@ public class SlashCommands extends ListenerAdapter {
         updateAction.addCommands(new CommandData("lockdown", "Locks the channel for normal users.")
                 .addOption(OptionType.STRING, "reason", "Reason why the channel is under lockdown.", false));
         updateAction.addCommands(new CommandData("unlockdown", "Unlocks the channel for normal users."));
+        updateAction.addCommands(new CommandData("mute", "Mutes a member.")
+                .addOption(OptionType.USER, "member", "The member you want to mute.", true)
+                .addOption(OptionType.STRING, "reason", "The reason why the member gets muted.", false));
 
         //Info
         updateAction.addCommands(new CommandData("botinfo", "Gives you the general information about the bot."));
@@ -117,6 +120,7 @@ public class SlashCommands extends ListenerAdapter {
                 case "slowdown" -> new Slowdown().onSlowdown(event);
                 case "lockdown" -> new Lockdown().onLockdown(event);
                 case "unlockdown" -> new UnLockdown().onUnLockdown(event);
+                case "mute" -> new Mute().onMute(event);
 
                 //Info
                 case "botinfo" -> new Botinfo().onBotinfo(event);
