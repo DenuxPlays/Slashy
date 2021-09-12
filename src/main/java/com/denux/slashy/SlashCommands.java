@@ -1,6 +1,7 @@
 package com.denux.slashy;
 
 import com.denux.slashy.commands.info.Botinfo;
+import com.denux.slashy.commands.info.Roadmap;
 import com.denux.slashy.commands.info.Serverinfo;
 import com.denux.slashy.commands.info.Userinfo;
 import com.denux.slashy.commands.moderation.*;
@@ -53,6 +54,7 @@ public class SlashCommands extends ListenerAdapter {
         updateAction.addCommands(new CommandData("serverinfo", "Gives you the general information about the server."));
         updateAction.addCommands(new CommandData("userinfo", "Gives you a few information about a user.")
                 .addOption(OptionType.USER, "member", "Member you want the information from.", true));
+        updateAction.addCommands(new CommandData("roadmap", "Gives you a link to the roadmap"));
 
         //Config subcommand
         updateAction.addCommands(new CommandData("config", "Configuration commands.")
@@ -126,6 +128,7 @@ public class SlashCommands extends ListenerAdapter {
                 case "botinfo" -> new Botinfo().onBotinfo(event);
                 case "serverinfo" -> new Serverinfo().onServerinfo(event);
                 case "userinfo" -> new Userinfo().onUserinfo(event);
+                case "roadmap" -> new Roadmap().onRoadmap(event);
 
                 //Adding the config subCommands
                 case "config" -> new com.denux.slashy.commands.configuration.Config().execute(event);
