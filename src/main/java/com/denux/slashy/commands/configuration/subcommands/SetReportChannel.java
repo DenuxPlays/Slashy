@@ -23,28 +23,20 @@ public class SetReportChannel extends GuildSlashSubCommand implements SlashComma
     public void execute(@NotNull SlashCommandEvent event) {
 
         event.deferReply().setEphemeral(true).queue();
-
         if (!event.getMember().hasPermission(Permission.ADMINISTRATOR)) {
-
             event.getHook().sendMessage("**You don't have the `administrator` permission.**").queue();
             return;
         }
-
         GuildChannel reportChannel = event.getOption("reportchannel").getAsGuildChannel();
 
         OptionMapping option = event.getOption("disabled");
         boolean disabled = option == null ? false : option.getAsBoolean();
 
         if (!disabled) {
-
             new Database().setDatabaseEntry(event.getGuild(), "reportChannel", reportChannel.getId());
-
-            event.getHook().sendMessage("**The channel: `"+reportChannel.getName()+"` is now your reportChannel.**").queue();
-        }
-        else {
-
+            event.getHook().sendMessage("**The channel: `" + reportChannel.getName() + "` is now your reportChannel.**").queue();
+        } else {
             new Database().setDatabaseEntry(event.getGuild(), "reportChannel", "0");
-
             event.getHook().sendMessage("**You don't have a logChannel anymore.**").queue();
         }
     }

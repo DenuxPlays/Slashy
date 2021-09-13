@@ -128,7 +128,6 @@ public class SlashCommands extends ListenerAdapter {
 
     @Override
     public void onReady(ReadyEvent event) {
-
         //Connecting to MongoDB when the bot is ready
         new Database().connectToDatabase();
         logger.info("Successfully connected to the Database.");

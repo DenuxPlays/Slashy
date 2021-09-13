@@ -27,7 +27,7 @@ public class Roadmap extends GuildSlashCommand implements SlashCommandHandler {
                 .setTimestamp(Instant.now())
                 .setDescription("[Trello](https://trello.com/b/cWtef4oQ/slashy)\n" +
                                 "[GitHub](https://github.com/DenuxPlays/Slashy)")
-                .setFooter(event.getMember().getUser().getAsTag()+ Constants.FOOTER_MESSAGE, event.getMember().getUser().getAvatarUrl())
+                .setFooter(event.getMember().getUser().getAsTag() + Constants.FOOTER_MESSAGE, event.getMember().getUser().getAvatarUrl())
                 .build();
 
         event.getHook().sendMessageEmbeds(embed).queue();

@@ -14,9 +14,9 @@ import java.time.Instant;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 
-public class Userinfo extends GuildSlashCommand implements SlashCommandHandler {
+public class UserInfo extends GuildSlashCommand implements SlashCommandHandler {
 
-    public Userinfo () {
+    public UserInfo() {
         this.commandData = new CommandData("userinfo", "Gives you a few information about a user.")
                 .addOption(OptionType.USER, "member", "Member you want the information from.", true);
     }
@@ -36,11 +36,11 @@ public class Userinfo extends GuildSlashCommand implements SlashCommandHandler {
                 .setTitle("Userinfo for "+member.getUser().getAsTag())
                 .setColor(Constants.EMBED_GRAY)
                 .setTimestamp(Instant.now())
-                .addField("Name", "```"+member.getUser().getAsTag()+"```", false)
-                .addField("ID", "```"+member.getId()+"```", false)
-                .addField("Joined on", "```"+member.getTimeJoined().format(formatter)+"```", false)
-                .addField("Account created at", "```"+member.getUser().getTimeCreated().format(formatter)+"```", false)
-                .setFooter(event.getMember().getUser().getAsTag()+ Constants.FOOTER_MESSAGE, event.getMember().getUser().getAvatarUrl())
+                .addField("Name", "```" + member.getUser().getAsTag() + "```", false)
+                .addField("ID", "```" + member.getId()+"```", false)
+                .addField("Joined on", "```" + member.getTimeJoined().format(formatter) + "```", false)
+                .addField("Account created at", "```" + member.getUser().getTimeCreated().format(formatter) + "```", false)
+                .setFooter(event.getMember().getUser().getAsTag() + Constants.FOOTER_MESSAGE, event.getMember().getUser().getAvatarUrl())
                 .build();
 
         event.getHook().sendMessageEmbeds(embed).queue();

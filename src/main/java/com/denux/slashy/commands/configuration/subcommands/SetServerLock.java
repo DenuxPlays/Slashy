@@ -21,18 +21,14 @@ public class SetServerLock extends GuildSlashSubCommand implements SlashCommandH
     public void execute(@NotNull SlashCommandEvent event) {
 
         event.deferReply().setEphemeral(true).queue();
-
         if (!event.getMember().hasPermission(Permission.ADMINISTRATOR)) {
-
             event.getHook().sendMessage("**You don't have the `administrator` permission.**").queue();
             return;
         }
-
         OptionMapping option = event.getOption("status");
         boolean status = option.getAsBoolean();
 
         new Database().setDatabaseEntry(event.getGuild(), "serverLock", status);
-
-        event.getHook().sendMessage("**You lock status is now: `"+status+"`**").queue();
+        event.getHook().sendMessage("**You lock status is now: `" + status + "`**").queue();
     }
 }

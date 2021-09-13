@@ -48,7 +48,6 @@ public class Database {
     reportChannel
      */
     public JsonElement getConfig(Guild guild, String path) {
-
         if (ifGuildDocExists(guild)) {
 
             //Connection to the cluster
@@ -64,32 +63,24 @@ public class Database {
 
             return root.get(split[split.length - 1]);
 
-        }
-    else {
+        } else {
         //Creating a Config if the guild doesn't have one
         createConfig(guild);
-
-        return new JsonPrimitive("0");
-        }
+        return new JsonPrimitive("0"); }
     }
 
     //checks if the guild has a config or not
     private boolean ifGuildDocExists(Guild guild) {
-
         MongoDatabase database = mongoClient.getDatabase("other");
         MongoCollection<Document> collection = database.getCollection("config");
 
         Document doc = collection.find(eq("guildID", guild.getId())).first();
-
         if (doc == null) return false;
-
         else return true;
-
     }
 
     //Creating the Config for a guild who doesn't have one
     private void createConfig(Guild guild) {
-
         //Connection to the cluster
         MongoDatabase database = mongoClient.getDatabase("other");
         MongoCollection<Document> collection = database.getCollection("config");
@@ -109,23 +100,18 @@ public class Database {
 
             //Returning a feedback via the Logger Plugin
             logger.info("Creating a Config with the guild id: "+guild.getId());
-        }
-        else logger.error("Guild already has a config.");
+        } else logger.error("Guild already has a config.");
     }
 
     //Sets |edits a Database Entry
     public void setDatabaseEntry(Guild guild, String path, Object newValue) {
-
         if (ifGuildDocExists(guild)) {
             BasicDBObject setData = new BasicDBObject(path, newValue);
             BasicDBObject update = new BasicDBObject("$set", setData);
 
             Document query = new Document("guildID", guild.getId());
-
             mongoClient.getDatabase("other").getCollection("config").updateOne(query, update);
-        }
-       else {
-
+        } else {
            createConfig(guild);
            logger.warn("Creating a Config for the Guild:"+guild.getId()+" | setDatabaseEntry");
 
@@ -133,7 +119,6 @@ public class Database {
            BasicDBObject update = new BasicDBObject("$set", setData);
 
            Document query = new Document("guildID", guild.getId());
-
            mongoClient.getDatabase("other").getCollection("config").updateOne(query, update);
         }
     }

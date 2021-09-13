@@ -12,9 +12,9 @@ import java.time.Instant;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 
-public class Serverinfo extends GuildSlashCommand implements SlashCommandHandler {
+public class ServerInfo extends GuildSlashCommand implements SlashCommandHandler {
 
-    public Serverinfo () {
+    public ServerInfo() {
         this.commandData = new CommandData("serverinfo", "Gives you the general information about the server.");
     }
 
@@ -34,12 +34,12 @@ public class Serverinfo extends GuildSlashCommand implements SlashCommandHandler
                 .addField("Name", "```" + event.getGuild().getName() + "```", true)
                 .addField("Owner", "```" + event.getGuild().getOwner().getUser().getAsTag() + "```", true)
                 .addField("ID", "```" + event.getGuild().getId() + "```", false)
-                .addField("Roles", "```"+event.getGuild().getRoles().size()+" Roles```", true)
-                .addField("Channel count", "```"+event.getGuild().getTextChannels().size()+" Text channels\n" +
-                        +event.getGuild().getVoiceChannels().size()+" Voice channels```", false)
-                .addField("Member count", "```"+event.getGuild().getMembers().size()+" Members```", false)
-                .addField("Server created on", "```"+event.getGuild().getTimeCreated().format(formatter)+" | UTC ```", false)
-                .setFooter(event.getMember().getUser().getAsTag()+ Constants.FOOTER_MESSAGE, event.getMember().getUser().getAvatarUrl())
+                .addField("Roles", "```" + event.getGuild().getRoles().size() + " Roles```", true)
+                .addField("Channel count", "```" + event.getGuild().getTextChannels().size()+" Text channels\n"
+                        + event.getGuild().getVoiceChannels().size() + " Voice channels```", false)
+                .addField("Member count", "```" + event.getGuild().getMembers().size() + " Members```", false)
+                .addField("Server created on", "```" + event.getGuild().getTimeCreated().format(formatter) + " | UTC ```", false)
+                .setFooter(event.getMember().getUser().getAsTag() + Constants.FOOTER_MESSAGE, event.getMember().getUser().getAvatarUrl())
                 .build();
 
         event.getHook().sendMessageEmbeds(embed).queue();

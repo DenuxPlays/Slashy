@@ -11,9 +11,9 @@ import org.jetbrains.annotations.NotNull;
 
 import java.time.Instant;
 
-public class Botinfo extends GuildSlashCommand implements SlashCommandHandler {
+public class BotInfo extends GuildSlashCommand implements SlashCommandHandler {
 
-    public Botinfo () {
+    public BotInfo() {
         this.commandData = new CommandData("botinfo", "Gives you the general information about the bot.");
     }
 
@@ -33,7 +33,7 @@ public class Botinfo extends GuildSlashCommand implements SlashCommandHandler {
                 .addField("Numbers of Servers the Bot is online", "`" + Bot.jda.getGuilds().size() + "`", false)
                 .addField("Users", "`" + Bot.jda.getUsers().size() + "`", false)
                 .addField("Version", "`" + Constants.VERSION + "`", true)
-                .addField("Bot Owner", "`"+event.getJDA().retrieveUserById(Constants.OWNER_ID).complete().getAsTag()+"`", false)
+                .addField("Bot Owner", "`" + event.getJDA().retrieveUserById(Constants.OWNER_ID).complete().getAsTag() + "`", false)
                 .setFooter(event.getMember().getUser().getAsTag() + Constants.FOOTER_MESSAGE, event.getMember().getUser().getAvatarUrl())
                 .build();
 

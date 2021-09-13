@@ -22,9 +22,7 @@ public class List extends GuildSlashSubCommand implements SlashCommandHandler {
     public void execute(@NotNull SlashCommandEvent event) {
 
         event.deferReply().setEphemeral(true).queue();
-
         if (!event.getMember().hasPermission(Permission.ADMINISTRATOR)) {
-
             event.getHook().sendMessage("**You don't have the `administrator` permission.**").queue();
             return;
         }
@@ -32,32 +30,20 @@ public class List extends GuildSlashSubCommand implements SlashCommandHandler {
         //Log Channel
         String logChannelID = new Database().getConfig(event.getGuild(), "logChannel").getAsString();
         String logChannel;
-        if (logChannelID.equals("0")) {
-            logChannel = "`You don't have a log channel.`";
-        }
-        else {
-            logChannel = "<#"+logChannelID+">";
-        }
+        if (logChannelID.equals("0")) logChannel = "`You don't have a log channel.`";
+        else logChannel = "<#"+logChannelID+">";
 
         //Mute Role
         String muteRoleID = new Database().getConfig(event.getGuild(), "muteRole").getAsString();
         String muteRole;
-        if (muteRoleID.equals("0")) {
-            muteRole = "`You don't have a muterole.`";
-        }
-        else {
-            muteRole = "<@&"+muteRoleID+">";
-        }
+        if (muteRoleID.equals("0")) muteRole = "`You don't have a muterole.`";
+        else muteRole = "<@&"+muteRoleID+">";
 
         //Starboard Channel
         String starboardChannelID = new Database().getConfig(event.getGuild(), "starboardChannel").getAsString();
         String starboardChannel;
-        if (starboardChannelID.equals("0")) {
-            starboardChannel = "`You don't have a starboard.`";
-        }
-        else {
-            starboardChannel = "<#"+starboardChannelID+">";
-        }
+        if (starboardChannelID.equals("0")) starboardChannel = "`You don't have a starboard.`";
+        else starboardChannel = "<#"+starboardChannelID+">";
 
         //Server Lock
         String status = new Database().getConfig(event.getGuild(), "serverLock").getAsString();
@@ -66,24 +52,14 @@ public class List extends GuildSlashSubCommand implements SlashCommandHandler {
 
         //Warn Limit
         String warnLimit = new Database().getConfig(event.getGuild(), "warnLimit").getAsString();
-        if (warnLimit.equals("0")) {
-            warnLimit = "`You don't have a warn limit.`";
-        }
-        else {
-            warnLimit = "`"+warnLimit+"`";
-        }
+        if (warnLimit.equals("0")) warnLimit = "`You don't have a warn limit.`";
+        else warnLimit = "`" + warnLimit + "`";
 
         //Report Channel
         String reportChannelID = new Database().getConfig(event.getGuild(), "reportChannel").getAsString();
         String reportChannel;
-        if (reportChannelID.equals("0")) {
-
-            reportChannel = "`You don't have a report channel.`";
-        }
-        else {
-
-            reportChannel = "<#"+reportChannelID+">";
-        }
+        if (reportChannelID.equals("0")) reportChannel = "`You don't have a report channel.`";
+        else reportChannel = "<#" + reportChannelID + ">";
 
         var embed = new EmbedBuilder()
                 .setTitle("Config")
