@@ -8,8 +8,6 @@ The roadmap is available [HERE](https://trello.com/b/cWtef4oQ/slashy)
 
 The docs are available [HERE](https://denux.gitbook.io/slashy/)
 
-**Version:** 1.3
-
 ### Requirements
 
 - Java 16 or higher
