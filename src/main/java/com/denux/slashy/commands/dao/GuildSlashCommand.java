@@ -3,6 +3,9 @@ package com.denux.slashy.commands.dao;
 import net.dv8tion.jda.api.interactions.commands.build.CommandData;
 import net.dv8tion.jda.api.interactions.commands.privileges.CommandPrivilege;
 
+/**
+ * Data-Access-Object (DAO) that represents a normal Slash Command.
+ */
 public abstract class GuildSlashCommand {
 
     protected CommandData commandData = null;

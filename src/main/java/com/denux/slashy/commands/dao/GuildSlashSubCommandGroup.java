@@ -2,6 +2,9 @@ package com.denux.slashy.commands.dao;
 
 import net.dv8tion.jda.api.interactions.commands.build.SubcommandGroupData;
 
+/**
+ * Data-Access-Object (DAO) that represents a Sub Command Group.
+ */
 public abstract class GuildSlashSubCommandGroup {
 
     protected SubcommandGroupData subcommandGroupData = null;
