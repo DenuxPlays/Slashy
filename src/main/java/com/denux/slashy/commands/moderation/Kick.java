@@ -1,7 +1,5 @@
 package com.denux.slashy.commands.moderation;
 
-import com.denux.slashy.Bot;
-import com.denux.slashy.SlashCommands;
 import com.denux.slashy.commands.SlashCommandHandler;
 import com.denux.slashy.commands.dao.GuildSlashCommand;
 import com.denux.slashy.services.Constants;

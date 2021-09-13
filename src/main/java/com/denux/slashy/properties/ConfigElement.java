@@ -1,7 +1,5 @@
 package com.denux.slashy.properties;
 
-import com.denux.slashy.Bot;
-import com.denux.slashy.SlashCommands;
 import com.denux.slashy.services.Constants;
 import org.slf4j.LoggerFactory;
 

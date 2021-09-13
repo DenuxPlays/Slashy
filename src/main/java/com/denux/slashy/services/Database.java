@@ -1,9 +1,8 @@
 package com.denux.slashy.services;
+
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
-import com.denux.slashy.Bot;
-import com.denux.slashy.SlashCommands;
 import com.denux.slashy.properties.ConfigString;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;

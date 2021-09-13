@@ -1,4 +1,5 @@
 package com.denux.slashy;
+
 import com.denux.slashy.properties.ConfigString;
 import com.denux.slashy.services.Constants;
 import net.dv8tion.jda.api.JDA;
@@ -6,7 +7,6 @@ import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.utils.MemberCachePolicy;
 import net.dv8tion.jda.api.utils.cache.CacheFlag;
-import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;

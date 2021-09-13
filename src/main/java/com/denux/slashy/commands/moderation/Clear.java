@@ -1,4 +1,5 @@
 package com.denux.slashy.commands.moderation;
+
 import com.denux.slashy.commands.SlashCommandHandler;
 import com.denux.slashy.commands.dao.GuildSlashCommand;
 import com.denux.slashy.services.Constants;
@@ -11,7 +12,6 @@ import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.CommandData;
-import net.dv8tion.jda.api.requests.restaction.WebhookMessageAction;
 import org.jetbrains.annotations.NotNull;
 
 import java.time.Instant;

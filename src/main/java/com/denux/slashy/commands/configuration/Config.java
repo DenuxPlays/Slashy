@@ -2,10 +2,7 @@ package com.denux.slashy.commands.configuration;
 
 import com.denux.slashy.commands.configuration.subcommands.*;
 import com.denux.slashy.commands.dao.GuildSlashCommand;
-import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import net.dv8tion.jda.api.interactions.commands.build.CommandData;
-
-import java.util.HashMap;
 
 public class Config extends GuildSlashCommand {
 

@@ -1,24 +1,17 @@
 package com.denux.slashy.commands.moderation;
 
-import com.denux.slashy.Bot;
-import com.denux.slashy.SlashCommands;
 import com.denux.slashy.commands.SlashCommandHandler;
 import com.denux.slashy.commands.dao.GuildSlashCommand;
 import com.denux.slashy.services.Constants;
 import com.denux.slashy.services.Database;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
-import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.TextChannel;
-import net.dv8tion.jda.api.entities.Webhook;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.CommandData;
-import net.dv8tion.jda.api.requests.restaction.WebhookAction;
-import net.dv8tion.jda.api.requests.restaction.WebhookMessageAction;
-import net.dv8tion.jda.api.requests.restaction.interactions.ReplyAction;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.LoggerFactory;
 
