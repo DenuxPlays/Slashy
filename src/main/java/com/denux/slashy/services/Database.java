@@ -14,8 +14,11 @@ import com.mongodb.MongoClientURI;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.Member;
 import org.bson.Document;
 import org.slf4j.LoggerFactory;
+
+import java.time.Instant;
 
 import static com.mongodb.client.model.Filters.eq;
 
@@ -140,6 +143,23 @@ public class Database {
            Document query = new Document("guildID", guild.getId());
            mongoClient.getDatabase("other").getCollection("config").updateOne(query, update);
         }
+    }
+
+    public void createWarnEntry(Guild guild, Member member, Member moderator, String reason) {
+
+        MongoDatabase database = mongoClient.getDatabase("other");
+        MongoCollection<Document> collection = database.getCollection("warns");
+
+        Document doc = new Document()
+                .append("guildID", guild.getId())
+                .append("moderatorID", moderator.getId())
+                .append("memberID", member.getId())
+                .append("reason", reason)
+                .append("time", Instant.now());
+
+        collection.insertOne(doc);
+
+        logger.info("Creating warn to the Use: {} on the Guild: {}", member.getId(), guild.getId());
     }
 }
 

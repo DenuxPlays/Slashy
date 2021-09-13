@@ -48,7 +48,7 @@ public class Kick extends GuildSlashCommand implements SlashCommandHandler {
         String reason = option == null ? "None" : option.getAsString();
 
         var embed = new EmbedBuilder()
-                .setAuthor(member.getUser().getAsTag() + " | Mute", null, member.getUser().getEffectiveAvatarUrl())
+                .setAuthor(member.getUser().getAsTag() + " | Kick", null, member.getUser().getEffectiveAvatarUrl())
                 .setColor(Constants.RED)
                 .setTimestamp(Instant.now())
                 .addField("Name", "```" + member.getUser().getAsTag() + "```", true)

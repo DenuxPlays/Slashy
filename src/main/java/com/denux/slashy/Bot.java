@@ -4,6 +4,7 @@ import com.denux.slashy.properties.ConfigString;
 import com.denux.slashy.services.Constants;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
+import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.utils.MemberCachePolicy;
 import net.dv8tion.jda.api.utils.cache.CacheFlag;
@@ -40,6 +41,7 @@ public class Bot {
                 .enableIntents(GatewayIntent.getIntents(GatewayIntent.ALL_INTENTS))
                 .enableCache(CacheFlag.ACTIVITY)
                 .setMemberCachePolicy(MemberCachePolicy.ALL)
+                .setStatus(OnlineStatus.DO_NOT_DISTURB)
                 .build();
     }
 }

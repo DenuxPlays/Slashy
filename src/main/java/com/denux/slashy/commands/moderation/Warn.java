@@ -6,24 +6,27 @@ import com.denux.slashy.services.Constants;
 import com.denux.slashy.services.Database;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
-import net.dv8tion.jda.api.entities.Role;
+import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
+import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.CommandData;
 import org.slf4j.LoggerFactory;
-import net.dv8tion.jda.api.entities.Member;
 
 import java.time.Instant;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.util.Locale;
 
-public class Unmute extends GuildSlashCommand implements SlashCommandHandler {
+public class Warn extends GuildSlashCommand implements SlashCommandHandler {
 
     private final org.slf4j.Logger logger = LoggerFactory.getLogger(Unmute.class);
 
-    public Unmute()  {
-        this.commandData = new CommandData("unmute", "Umutes a muted member,")
-                .addOption(OptionType.USER, "member", "The member you want to unmute.", true);
-
+    public Warn() {
+        this.commandData = new CommandData("warn", "Warns a Member for a specific reason.")
+                .addOption(OptionType.USER, "member", "The member you want to warn", true)
+                .addOption(OptionType.STRING, "reason", "The reason why you warned the user.", false);
     }
 
     @Override
@@ -39,25 +42,21 @@ public class Unmute extends GuildSlashCommand implements SlashCommandHandler {
 
         Member member = event.getOption("member").getAsMember();
 
-        String muteRoleID = new Database().getConfig(event.getGuild(), "muteRole").getAsString();
+        OptionMapping option = event.getOption("reason");
+        String reason = option == null ? "None" : option.getAsString();
 
-        Role mutRole;
-        if (!muteRoleID.equals("0")) {
-            mutRole = event.getGuild().getRoleById(muteRoleID);
-        } else {
-            event.getHook().sendMessage("**You don't have a muterole.**").queue();
-            return;
-        }
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("EEEE, dd.MM.yyyy H:mm:s", Locale.ENGLISH).withZone(ZoneId.of("UTC"));
 
-        event.getGuild().removeRoleFromMember(member, mutRole).complete();
+        new Database().createWarnEntry(event.getGuild(), member, event.getMember(), reason);
 
         var embed = new EmbedBuilder()
-                .setAuthor(member.getUser().getAsTag() + " | Unmute", null, member.getUser().getEffectiveAvatarUrl())
+                .setAuthor(member.getUser().getAsTag() + " | Warn", null, member.getUser().getEffectiveAvatarUrl())
                 .setColor(Constants.RED)
                 .setTimestamp(Instant.now())
                 .addField("Name", "```"+member.getUser().getAsTag()+"```", true)
                 .addField("Moderator", "```"+event.getMember().getUser().getAsTag()+"```", true)
                 .addField("User ID", "```"+member.getId()+"```", false)
+                .addField("Time", "```"+formatter.format(Instant.now())+" | UTC ```", false)
                 .setFooter(event.getMember().getUser().getAsTag()+ Constants.FOOTER_MESSAGE, event.getMember().getUser().getEffectiveAvatarUrl())
                 .build();
 
