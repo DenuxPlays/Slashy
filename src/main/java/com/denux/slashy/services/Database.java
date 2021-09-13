@@ -1,8 +1,8 @@
 package com.denux.slashy.services;
+
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
-import com.denux.slashy.Bot;
 import com.denux.slashy.properties.ConfigString;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -21,9 +21,16 @@ import static com.mongodb.client.model.Filters.eq;
 
 public class Database {
 
+    private final org.slf4j.Logger logger = LoggerFactory.getLogger(Database.class);
+
+    /**
+     * A static Reference to the MongoDB Client.
+     */
     public static MongoClient mongoClient;
 
-    //Creates a connection to the MongoDB Database
+    /**
+     * Establishes a connection to the MongoDB Database.
+     */
     public void connectToDatabase() {
 
         //Logging | Gives an error if something goes wrong
@@ -36,18 +43,21 @@ public class Database {
         mongoClient = new MongoClient(uri);
     }
 
-    /*
-    Available paths:
-    guildID
-    logChannel
-    muteRole
-    serverLock
-    starboardChannel
-    warnLimit
-    reportChannel
+    /**
+     * Returns a JsonElement from a given path. Possible Paths include:
+     * <ol>
+     *     <li>guildID
+     *     <li>logChannel
+     *     <li>muteRole
+     *     <li>serverLock
+     *     <li>starboardChannel
+     *     <li>warnLimit
+     *     <li>reportChannel</li>
+     * </ol>
+     * @param guild The Guild the Config Document belongs to.
+     * @param path The Path the Database entry is on.
      */
     public JsonElement getConfig(Guild guild, String path) {
-
         if (ifGuildDocExists(guild)) {
 
             //Connection to the cluster
@@ -63,32 +73,28 @@ public class Database {
 
             return root.get(split[split.length - 1]);
 
-        }
-    else {
+        } else {
         //Creating a Config if the guild doesn't have one
         createConfig(guild);
-
-        return new JsonPrimitive("0");
-        }
+        return new JsonPrimitive("0"); }
     }
 
-    //checks if the guild has a config or not
+    /**
+     * Simple boolean to check if a Config Document for the given Guild already exists.
+     */
     private boolean ifGuildDocExists(Guild guild) {
-
         MongoDatabase database = mongoClient.getDatabase("other");
         MongoCollection<Document> collection = database.getCollection("config");
 
         Document doc = collection.find(eq("guildID", guild.getId())).first();
-
-        if (doc == null) return false;
-
-        else return true;
-
+        return doc != null;
     }
 
-    //Creating the Config for a guild who doesn't have one
+    /**
+     * Creates a default Config Document for the given Guild.
+     * @param guild The Guild the Config Document should be created for.
+     */
     private void createConfig(Guild guild) {
-
         //Connection to the cluster
         MongoDatabase database = mongoClient.getDatabase("other");
         MongoCollection<Document> collection = database.getCollection("config");
@@ -107,32 +113,31 @@ public class Database {
             collection.insertOne(doc);
 
             //Returning a feedback via the Logger Plugin
-            Bot.logger.info("Creating a Config with the guild id: "+guild.getId());
-        }
-        else Bot.logger.error("Guild already has a config.");
+            logger.info("Creating a Config with the guild id: " + guild.getId());
+        } else logger.error("Guild already has a config.");
     }
 
-    //Sets |edits a Database Entry
+    /**
+     * Updates a Database entry on the given path.
+     * @param guild The Guild the Config Document belongs to.
+     * @param path The Path the Database entry is on.
+     * @param newValue The value the Database Entry should be updated to.
+     */
     public void setDatabaseEntry(Guild guild, String path, Object newValue) {
-
         if (ifGuildDocExists(guild)) {
             BasicDBObject setData = new BasicDBObject(path, newValue);
             BasicDBObject update = new BasicDBObject("$set", setData);
 
             Document query = new Document("guildID", guild.getId());
-
             mongoClient.getDatabase("other").getCollection("config").updateOne(query, update);
-        }
-       else {
-
+        } else {
            createConfig(guild);
-           Bot.logger.warn("Creating a Config for the Guild:"+guild.getId()+" | setDatabaseEntry");
+           logger.warn("Creating a Config for the Guild:" + guild.getId() + " | setDatabaseEntry");
 
            BasicDBObject setData = new BasicDBObject(path, newValue);
            BasicDBObject update = new BasicDBObject("$set", setData);
 
            Document query = new Document("guildID", guild.getId());
-
            mongoClient.getDatabase("other").getCollection("config").updateOne(query, update);
         }
     }

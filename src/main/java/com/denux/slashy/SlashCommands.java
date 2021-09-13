@@ -1,152 +1,159 @@
 package com.denux.slashy;
 
-import com.denux.slashy.commands.info.Botinfo;
-import com.denux.slashy.commands.info.Roadmap;
-import com.denux.slashy.commands.info.Serverinfo;
-import com.denux.slashy.commands.info.Userinfo;
-import com.denux.slashy.commands.moderation.*;
-import com.denux.slashy.services.Config;
+import com.denux.slashy.commands.SlashCommandHandler;
+import com.denux.slashy.commands.dao.GuildSlashCommand;
+import com.denux.slashy.commands.dao.GuildSlashSubCommand;
+import com.denux.slashy.commands.dao.GuildSlashSubCommandGroup;
+import com.denux.slashy.services.Constants;
 import com.denux.slashy.services.Database;
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.entities.ChannelType;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.events.ReadyEvent;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
-import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.CommandData;
-import net.dv8tion.jda.api.interactions.commands.build.SubcommandData;
+import net.dv8tion.jda.api.interactions.commands.privileges.CommandPrivilege;
 import net.dv8tion.jda.api.requests.restaction.CommandListUpdateAction;
+import org.jetbrains.annotations.NotNull;
+import org.reflections.Reflections;
+import org.slf4j.LoggerFactory;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Set;
 
 public class SlashCommands extends ListenerAdapter {
 
-     public void registerSlashCommands(Guild guild) {
+    private final org.slf4j.Logger logger = LoggerFactory.getLogger(SlashCommands.class);
+    private HashMap<String, SlashCommandHandler> slashCommands;
+    private HashMap<String, CommandPrivilege[]> slashPrivileges;
 
-        //Adds slash commands to all the guilds
-         //TODO global commands
+    void registerSlashCommands(@NotNull Guild guild) {
+
+        this.slashCommands = new HashMap<>();
+        this.slashPrivileges = new HashMap<>();
+
         CommandListUpdateAction updateAction = guild.updateCommands();
+        //CommandListUpdateAction updateAction = Bot.jda.updateCommands();
 
-        //Testing
-        updateAction.addCommands(new CommandData("test", "Testing Things."));
+        Reflections cmds = new Reflections(Constants.COMMANDS_PACKAGE);
+        Set<Class<? extends GuildSlashCommand>> classes = cmds.getSubTypesOf(GuildSlashCommand.class);
 
-        //Moderation
-        updateAction.addCommands(new CommandData("clear", "A command to clear messages in a channel.")
-                .addOption(OptionType.INTEGER, "amount", "The amount you want to clear.",true));
-        updateAction.addCommands(new CommandData("ban", "Will ban the member permanently.")
-                .addOption(OptionType.USER, "member", "This member will be banned.", true)
-                .addOption(OptionType.STRING, "reason", "Reason why the member was banned.", false));
-        updateAction.addCommands(new CommandData("kick", "Kicks a member from the discord.")
-                .addOption(OptionType.USER, "member", "This member will be kicked.", true)
-                .addOption(OptionType.STRING, "reason", "Reason why the member was kicked.", false));
-        updateAction.addCommands(new CommandData("slowdown", "Sets the slow mode for a channel.")
-                .addOption(OptionType.INTEGER, "seconds", "How long the slow mode would be.", true));
-        updateAction.addCommands(new CommandData("lockdown", "Locks the channel for normal users.")
-                .addOption(OptionType.STRING, "reason", "Reason why the channel is under lockdown.", false));
-        updateAction.addCommands(new CommandData("unlockdown", "Unlocks the channel for normal users."));
-        updateAction.addCommands(new CommandData("mute", "Mutes a member.")
-                .addOption(OptionType.USER, "member", "The member you want to mute.", true)
-                .addOption(OptionType.STRING, "reason", "The reason why the member gets muted.", false));
+        for (var clazz : classes) {
+            CommandData cmdData = null;
 
-        //Info
-        updateAction.addCommands(new CommandData("botinfo", "Gives you the general information about the bot."));
-        updateAction.addCommands(new CommandData("serverinfo", "Gives you the general information about the server."));
-        updateAction.addCommands(new CommandData("userinfo", "Gives you a few information about a user.")
-                .addOption(OptionType.USER, "member", "Member you want the information from.", true));
-        updateAction.addCommands(new CommandData("roadmap", "Gives you a link to the roadmap"));
+            try {
+                GuildSlashCommand instance;
+                try { instance = clazz.getDeclaredConstructor(Guild.class).newInstance(guild);
+                } catch (NoSuchMethodException nsm) { instance = clazz.getConstructor().newInstance(); }
 
-        //Config subcommand
-        updateAction.addCommands(new CommandData("config", "Configuration commands.")
-                //List subcommand
-                .addSubcommands(new SubcommandData("list", "Gives you a overview of your settings."))
-                //SetWarnLimit subcommand
-                .addSubcommands(new SubcommandData("setwarnlimit", "Sets the warn limit for your Server.")
-                        .addOption(OptionType.INTEGER, "limit", "The max amount of warns a User can have before getting banned.", true)
-                        .addOption(OptionType.BOOLEAN, "disabled", "Disables the warn limit for your Server.", false))
-                //SetStarboardChannel subcommand
-                .addSubcommands(new SubcommandData("setstarboardchannel", "Sets the Starboard Channel for your Server and activates it.")
-                        .addOption(OptionType.CHANNEL, "starboardchannel", "The Channel you want to be the Starboard Channel.", true)
-                        .addOption(OptionType.BOOLEAN, "disabled", "Disables the Starboard.", false))
-                //ServerLock subcommand
-                .addSubcommands(new SubcommandData("setserverlock", "Locks or unlocks the server so that nobody can join.")
-                        .addOption(OptionType.BOOLEAN, "status", "Set this too true if you want to lock the server.", true))
-                //SetReportChannel subcommand
-                .addSubcommands(new SubcommandData("setreportchannel", "Sets the ReportChannel ID for your Server.")
-                        .addOption(OptionType.CHANNEL, "reportchannel", "The Channel you want to be the ReportChannel.", true)
-                        .addOption(OptionType.BOOLEAN, "disabled", "Set this to true if you want to remove the ReportChannel", false))
-                //SetLogChannel subcommand
-                .addSubcommands(new SubcommandData("setlogchannel", "Sets the LogChannel ID for your Server.")
-                        .addOption(OptionType.CHANNEL, "logchannel", "The Channel you want to be the logChannel.", true)
-                        .addOption(OptionType.BOOLEAN, "disabled", "Set this to true if you want to remove the logchannel", false))
-                //SetMuteRole subcommand
-                .addSubcommands(new SubcommandData("setmuterole", "Sets the Muterole ID for your server.")
-                        .addOption(OptionType.ROLE, "muterole", "The role you want to be the muterole", true)
-                        .addOption(OptionType.BOOLEAN, "disabled", "Set this to true if you want to remove the mutRole", false)));
+                if (instance.getCommandData() == null) {
+                    logger.warn("Class {} is missing CommandData. It will be ignored.", clazz.getName());
+                    continue;
+                }
+                if (instance.getCommandPrivileges() != null) {
+                    slashPrivileges.put(instance.getCommandData().getName(),
+                            instance.getCommandPrivileges());
+                }
+                cmdData = instance.getCommandData();
+                logger.info("{}[{}]{} Added CommandData from Class {}",
+                        Constants.TEXT_WHITE, guild.getName(),
+                        Constants.TEXT_RESET, clazz.getSimpleName());
 
+                if (instance.getSubCommandClasses() == null
+                        && instance.getSubCommandGroupClasses() == null) {
+                    slashCommands.put(instance.getCommandData().getName() + " " +
+                            null + " " +
+                            null, (SlashCommandHandler) instance);
+                }
+                if (instance.getSubCommandGroupClasses() != null) {
+                    for (var subGroupClazz : instance.getSubCommandGroupClasses()) {
+                        GuildSlashSubCommandGroup subGroupInstance = (GuildSlashSubCommandGroup) subGroupClazz.getDeclaredConstructor().newInstance();
+                        if (subGroupInstance.getSubCommandGroupData() == null) {
+                            logger.warn("Class {} is missing SubCommandGroupData. It will be ignored.", subGroupClazz.getName());
+                            continue;
+                        }
+                        logger.info("\t{}[{}]{} Adding SubCommandGroupData from Class {}",
+                                Constants.TEXT_WHITE, clazz.getSimpleName(),
+                                Constants.TEXT_RESET, subGroupClazz.getSimpleName());
 
+                        if (subGroupInstance.getSubCommandClasses() == null) {
+                            logger.warn("Class {} is missing SubCommandClasses. It will be ignored.", subGroupClazz.getName());
+                            continue;
+                        }
+                        for (var subClazz : subGroupInstance.getSubCommandClasses()) {
+                            GuildSlashSubCommand subInstance = (GuildSlashSubCommand) subClazz.getDeclaredConstructor().newInstance();
+                            if (subInstance.getSubCommandData() == null) {
+                                logger.warn("Class {} is missing SubCommandData. It will be ignored.", subClazz.getName());
+                                continue;
+                            }
+                            cmdData.addSubcommandGroups(subGroupInstance.getSubCommandGroupData()
+                                    .addSubcommands(subInstance.getSubCommandData()));
+
+                            slashCommands.put(instance.getCommandData().getName() + " " +
+                                    subGroupInstance.getSubCommandGroupData().getName() + " " +
+                                    subInstance.getSubCommandData().getName(), (SlashCommandHandler) subInstance);
+
+                            logger.info("\t\t{}[{}]{} Added SubCommandData from Class {}",
+                                    Constants.TEXT_WHITE, subGroupClazz.getSimpleName(), Constants.TEXT_RESET,
+                                    subClazz.getSimpleName());
+                        }
+                    }
+                }
+
+                if (instance.getSubCommandClasses() != null) {
+                    for (var subClazz : instance.getSubCommandClasses()) {
+                        GuildSlashSubCommand subInstance = (GuildSlashSubCommand) subClazz.getDeclaredConstructor().newInstance();
+                        if (subInstance.getSubCommandData() == null) {
+                            logger.warn("Class {} is missing SubCommandData. It will be ignored.", subClazz.getName());
+                        } else {
+                            cmdData.addSubcommands(subInstance.getSubCommandData());
+
+                            slashCommands.put(instance.getCommandData().getName() + " " +
+                                            null + " " + subInstance.getSubCommandData().getName(),
+                                    (SlashCommandHandler) subInstance);
+
+                            logger.info("\t{}[{}]{} Added SubCommandData from Class {}",
+                                    Constants.TEXT_WHITE, clazz.getSimpleName(),
+                                    Constants.TEXT_RESET, subClazz.getSimpleName());
+                        }
+                    }
+                }
+            } catch (Exception e) { e.printStackTrace(); }
+            updateAction.addCommands(cmdData);
+        }
+        logger.info("{}[{}]{} Queuing SlashCommands",
+                Constants.TEXT_WHITE, guild.getName(), Constants.TEXT_RESET);
         updateAction.queue();
     }
+
     @Override
     public void onReady(ReadyEvent event) {
-
         //Connecting to MongoDB when the bot is ready
         new Database().connectToDatabase();
-        Bot.logger.info("Successfully connected to the Database.");
+        logger.info("Successfully connected to the Database.");
 
         //Adding commands to the guilds
-        for(var guild : event.getJDA().getGuilds()) registerSlashCommands(guild);
-        Bot.logger.info("SlashCommands loaded");
+        for (var guild : event.getJDA().getGuilds()) registerSlashCommands(guild);
+        logger.info("{}[*]{} Command update completed\n",
+                Constants.TEXT_WHITE, Constants.TEXT_RESET);
     }
 
     @Override
     public void onSlashCommand(SlashCommandEvent event) {
-
-        //Part 2 for async commands
         Bot.asyncPool.submit(() -> {
-
-            //Returns when the command is used in a DM Channel
-            if (event.getChannelType() == ChannelType.PRIVATE) return;
-
-        //Try catch block for error handling
-        try {
-            switch (event.getName()) {
-
-                //Testing
-                case "test" -> new Test().onTest(event);
-
-                //Moderation
-                case "clear" -> new Clear().onClear(event);
-                case "ban" -> new Ban().onBan(event);
-                case "kick" -> new Kick().onKick(event);
-                case "slowdown" -> new Slowdown().onSlowdown(event);
-                case "lockdown" -> new Lockdown().onLockdown(event);
-                case "unlockdown" -> new UnLockdown().onUnLockdown(event);
-                case "mute" -> new Mute().onMute(event);
-
-                //Info
-                case "botinfo" -> new Botinfo().onBotinfo(event);
-                case "serverinfo" -> new Serverinfo().onServerinfo(event);
-                case "userinfo" -> new Userinfo().onUserinfo(event);
-                case "roadmap" -> new Roadmap().onRoadmap(event);
-
-                //Adding the config subCommands
-                case "config" -> new com.denux.slashy.commands.configuration.Config().execute(event);
+            try {
+                var command = slashCommands.get(event.getName() + " " + event.getSubcommandGroup() + " " + event.getSubcommandName());
+                command.execute(event);
+            } catch (Exception e) {
+                var embed = new EmbedBuilder()
+                        .setColor(Constants.EMBED_GRAY)
+                        .setAuthor(e.getClass().getSimpleName(), null, Bot.jda.getSelfUser().getEffectiveAvatarUrl())
+                        .setDescription("```" + e.getMessage() + "```")
+                        .setTimestamp(new Date().toInstant())
+                        .build();
+                event.replyEmbeds(embed).setEphemeral(true).queue();
             }
-
-        //Throwing an exception for the Error handling embed
-        } catch (Exception e) {
-
-            //Error handling embed
-            var embed = new EmbedBuilder()
-                    .setColor(Config.RED)
-                    .setAuthor(e.getClass().getSimpleName(), null, Bot.jda.getSelfUser().getEffectiveAvatarUrl())
-                    .setDescription("```" + e.getMessage() + "```")
-                    .setTimestamp(new Date().toInstant())
-                    .build();
-
-            event.getHook().sendMessageEmbeds(embed).setEphemeral(true).queue();
-        }
-    });
-}
+        });
+    }
 }

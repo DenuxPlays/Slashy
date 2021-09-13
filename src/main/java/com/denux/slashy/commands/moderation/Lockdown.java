@@ -1,14 +1,25 @@
 package com.denux.slashy.commands.moderation;
 
+import com.denux.slashy.commands.SlashCommandHandler;
+import com.denux.slashy.commands.dao.GuildSlashCommand;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
+import net.dv8tion.jda.api.interactions.commands.OptionType;
+import net.dv8tion.jda.api.interactions.commands.build.CommandData;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.EnumSet;
 
-public class Lockdown {
+public class Lockdown extends GuildSlashCommand implements SlashCommandHandler {
 
-    public void onLockdown(SlashCommandEvent event) {
+    public Lockdown () {
+        this.commandData = new CommandData("lockdown", "Locks the channel for normal users.")
+                .addOption(OptionType.STRING, "reason", "Reason why the channel is under lockdown.", false);
+    }
+
+    @Override
+    public void execute(@NotNull SlashCommandEvent event) {
 
         event.deferReply().setEphemeral(false).queue();
 

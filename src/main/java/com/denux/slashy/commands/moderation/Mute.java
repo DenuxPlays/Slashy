@@ -1,7 +1,8 @@
 package com.denux.slashy.commands.moderation;
 
-import com.denux.slashy.Bot;
-import com.denux.slashy.services.Config;
+import com.denux.slashy.commands.SlashCommandHandler;
+import com.denux.slashy.commands.dao.GuildSlashCommand;
+import com.denux.slashy.services.Constants;
 import com.denux.slashy.services.Database;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
@@ -10,12 +11,25 @@ import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
+import net.dv8tion.jda.api.interactions.commands.OptionType;
+import net.dv8tion.jda.api.interactions.commands.build.CommandData;
+import org.jetbrains.annotations.NotNull;
+import org.slf4j.LoggerFactory;
 
 import java.time.Instant;
 
-public class Mute {
+public class Mute extends GuildSlashCommand implements SlashCommandHandler {
 
-    public void onMute(SlashCommandEvent event) {
+    private final org.slf4j.Logger logger = LoggerFactory.getLogger(Mute.class);
+
+    public Mute () {
+        this.commandData = new CommandData("mute", "Mutes a member.")
+                .addOption(OptionType.USER, "member", "The member you want to mute.", true)
+                .addOption(OptionType.STRING, "reason", "The reason why the member gets muted.", false);
+    }
+
+    @Override
+    public void execute(@NotNull SlashCommandEvent event) {
 
         event.deferReply().setEphemeral(true).queue();
 
@@ -50,20 +64,20 @@ public class Mute {
 
         var embed = new EmbedBuilder()
                 .setTitle(member.getUser().getAsTag()+" | Mute")
-                .setColor(Config.RED)
+                .setColor(Constants.RED)
                 .setTimestamp(Instant.now())
                 .addField("Name", "```"+member.getUser().getAsTag()+"```", true)
                 .addField("Moderator", "```"+event.getMember().getUser().getAsTag()+"```", true)
                 .addField("User ID", "```"+member.getId()+"```", false)
                 .addField("Reason", "```"+reason+"```", false)
-                .setFooter(event.getMember().getUser().getAsTag()+Config.FOOTER_MESSAGE, event.getMember().getUser().getAvatarUrl())
+                .setFooter(event.getMember().getUser().getAsTag()+ Constants.FOOTER_MESSAGE, event.getMember().getUser().getAvatarUrl())
                 .build();
 
         if (member.getUser().hasPrivateChannel()) {
             member.getUser().openPrivateChannel().complete()
                     .sendMessageEmbeds(embed).queue();
         }
-        else Bot.logger.warn("Cannot send the message to this user.");
+        else logger.warn("Cannot send the message to this user.");
 
         String logChannelID = new Database().getConfig(event.getGuild(), "logChannel").getAsString();
 

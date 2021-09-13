@@ -21,9 +21,6 @@ public class ConfigInt extends ConfigElement {
             }
         }
     }
-
-
-
     public int getValue(){
         return this.value;
     }
