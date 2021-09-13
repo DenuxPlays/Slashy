@@ -31,11 +31,8 @@ public class Kick extends GuildSlashCommand implements SlashCommandHandler {
     @Override
     public void execute(@NotNull SlashCommandEvent event) {
 
-        event.deferReply().setEphemeral(true).queue();
+        event.deferReply(true).queue();
         Member member = event.getOption("member").getAsMember();
-
-        OptionMapping option = event.getOption("reason");
-        String reason = option == null ? "None" : option.getAsString();
 
         if (!event.getMember().hasPermission(Permission.KICK_MEMBERS)) {
             event.getHook().sendMessage("**You don't have the `kick member` permission.**").queue();
@@ -46,6 +43,9 @@ public class Kick extends GuildSlashCommand implements SlashCommandHandler {
             event.getHook().sendMessage("**You can't ban an administrator/moderator.**").queue();
             return;
         }
+
+        OptionMapping option = event.getOption("reason");
+        String reason = option == null ? "None" : option.getAsString();
 
         var embed = new EmbedBuilder()
                 .setAuthor(member.getUser().getAsTag() + " | Mute", null, member.getUser().getEffectiveAvatarUrl())
@@ -65,16 +65,16 @@ public class Kick extends GuildSlashCommand implements SlashCommandHandler {
             }
             else logger.warn("Cannot send messages to this user");
 
-            //member.kick(reason).queue();
-            String logChannelID = new Database().getConfig(event.getGuild(), "logchannel").getAsString();
+            member.kick(reason).queue();
+            String logChannelID = new Database().getConfig(event.getGuild(), "logChannel").getAsString();
 
             if (!logChannelID.equals("0")) {
                 TextChannel logChannel = event.getGuild().getTextChannelById(logChannelID);
                 logChannel.sendMessageEmbeds(embed).queue();
             } else {
                 event.getTextChannel().sendMessageEmbeds(embed).queue();
-                event.getHook().sendMessage("Done").queue();
         }
+        event.getHook().sendMessage("Done").queue();
     }
 }
 
