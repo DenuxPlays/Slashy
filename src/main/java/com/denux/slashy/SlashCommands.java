@@ -34,6 +34,7 @@ public class SlashCommands extends ListenerAdapter {
         this.slashPrivileges = new HashMap<>();
 
         CommandListUpdateAction updateAction = guild.updateCommands();
+        //CommandListUpdateAction updateAction = Bot.jda.updateCommands();
 
         Reflections cmds = new Reflections(Constants.COMMANDS_PACKAGE);
         Set<Class<? extends GuildSlashCommand>> classes = cmds.getSubTypesOf(GuildSlashCommand.class);
