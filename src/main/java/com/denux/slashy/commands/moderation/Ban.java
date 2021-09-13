@@ -55,6 +55,7 @@ public class Ban extends GuildSlashCommand implements SlashCommandHandler {
 
         var embed = new EmbedBuilder()
                 .setTitle(member.getUser().getAsTag()+" | Ban")
+                .setThumbnail(member.getUser().getEffectiveAvatarUrl())
                 .setColor(Constants.RED)
                 .setTimestamp(Instant.now())
                 .addField("Name", "```"+member.getUser().getAsTag()+"```", true)
