@@ -52,8 +52,7 @@ public class Unmute extends GuildSlashCommand implements SlashCommandHandler {
         event.getGuild().removeRoleFromMember(member, mutRole).complete();
 
         var embed = new EmbedBuilder()
-                .setTitle(member.getUser().getAsTag()+" | Unmute")
-                .setThumbnail(member.getUser().getEffectiveAvatarUrl())
+                .setAuthor(member.getUser().getAsTag() + " | Mute", null, member.getUser().getEffectiveAvatarUrl())
                 .setColor(Constants.RED)
                 .setTimestamp(Instant.now())
                 .addField("Name", "```"+member.getUser().getAsTag()+"```", true)

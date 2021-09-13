@@ -48,8 +48,7 @@ public class Kick extends GuildSlashCommand implements SlashCommandHandler {
         }
 
         var embed = new EmbedBuilder()
-                .setTitle(member.getUser().getAsTag() + " | Kick")
-                .setThumbnail(member.getUser().getEffectiveAvatarUrl())
+                .setAuthor(member.getUser().getAsTag() + " | Mute", null, member.getUser().getEffectiveAvatarUrl())
                 .setColor(Constants.RED)
                 .setTimestamp(Instant.now())
                 .addField("Name", "```" + member.getUser().getAsTag() + "```", true)

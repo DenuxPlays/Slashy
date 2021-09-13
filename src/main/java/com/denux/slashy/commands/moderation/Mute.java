@@ -63,8 +63,7 @@ public class Mute extends GuildSlashCommand implements SlashCommandHandler {
         event.getGuild().addRoleToMember(member, muteRole).complete();
 
         var embed = new EmbedBuilder()
-                .setTitle(member.getUser().getAsTag()+" | Mute")
-                .setThumbnail(member.getUser().getEffectiveAvatarUrl())
+                .setAuthor(member.getUser().getAsTag() + " | Mute", null, member.getUser().getEffectiveAvatarUrl())
                 .setColor(Constants.RED)
                 .setTimestamp(Instant.now())
                 .addField("Name", "```"+member.getUser().getAsTag()+"```", true)
