@@ -39,7 +39,7 @@ public class ServerInfo extends GuildSlashCommand implements SlashCommandHandler
                         + event.getGuild().getVoiceChannels().size() + " Voice channels```", false)
                 .addField("Member count", "```" + event.getGuild().getMembers().size() + " Members```", false)
                 .addField("Server created on", "```" + event.getGuild().getTimeCreated().format(formatter) + " | UTC ```", false)
-                .setFooter(event.getMember().getUser().getAsTag() + Constants.FOOTER_MESSAGE, event.getMember().getUser().getAvatarUrl())
+                .setFooter(event.getMember().getUser().getAsTag() + Constants.FOOTER_MESSAGE, event.getMember().getUser().getEffectiveAvatarUrl())
                 .build();
 
         event.getHook().sendMessageEmbeds(embed).queue();

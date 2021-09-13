@@ -55,7 +55,7 @@ public class Clear extends GuildSlashCommand implements SlashCommandHandler {
                     .setTimestamp(Instant.now())
                     .addField("Moderator:", event.getUser().getAsTag(), true)
                     .addField("Channel:", event.getTextChannel().getAsMention(), true)
-                    .setFooter(event.getUser().getAsTag()+ Constants.FOOTER_MESSAGE, event.getUser().getAvatarUrl())
+                    .setFooter(event.getUser().getAsTag()+ Constants.FOOTER_MESSAGE, event.getUser().getEffectiveAvatarUrl())
                     .build();
 
             String logChannelID = new Database().getConfig(Objects.requireNonNull(event.getGuild()), "logChannel").getAsString();

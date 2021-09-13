@@ -72,7 +72,7 @@ public class List extends GuildSlashSubCommand implements SlashCommandHandler {
                 .addField("Server lock Status", status, false)
                 .addField("Warn limit", warnLimit, true)
                 .addField("Report Channel", reportChannel, false)
-                .setFooter(event.getMember().getUser().getAsTag(), event.getMember().getUser().getAvatarUrl())
+                .setFooter(event.getMember().getUser().getAsTag(), event.getMember().getUser().getEffectiveAvatarUrl())
                 .build();
 
         event.getHook().sendMessageEmbeds(embed).queue();

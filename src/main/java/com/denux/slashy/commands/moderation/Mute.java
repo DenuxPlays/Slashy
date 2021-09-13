@@ -70,7 +70,7 @@ public class Mute extends GuildSlashCommand implements SlashCommandHandler {
                 .addField("Moderator", "```"+event.getMember().getUser().getAsTag()+"```", true)
                 .addField("User ID", "```"+member.getId()+"```", false)
                 .addField("Reason", "```"+reason+"```", false)
-                .setFooter(event.getMember().getUser().getAsTag()+ Constants.FOOTER_MESSAGE, event.getMember().getUser().getAvatarUrl())
+                .setFooter(event.getMember().getUser().getAsTag()+ Constants.FOOTER_MESSAGE, event.getMember().getUser().getEffectiveAvatarUrl())
                 .build();
 
         if (member.getUser().hasPrivateChannel()) {

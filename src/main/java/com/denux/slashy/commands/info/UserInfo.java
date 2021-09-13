@@ -36,11 +36,12 @@ public class UserInfo extends GuildSlashCommand implements SlashCommandHandler {
                 .setTitle("Userinfo for "+member.getUser().getAsTag())
                 .setColor(Constants.EMBED_GRAY)
                 .setTimestamp(Instant.now())
+                .setThumbnail(member.getUser().getEffectiveAvatarUrl())
                 .addField("Name", "```" + member.getUser().getAsTag() + "```", false)
                 .addField("ID", "```" + member.getId()+"```", false)
                 .addField("Joined on", "```" + member.getTimeJoined().format(formatter) + "```", false)
                 .addField("Account created at", "```" + member.getUser().getTimeCreated().format(formatter) + "```", false)
-                .setFooter(event.getMember().getUser().getAsTag() + Constants.FOOTER_MESSAGE, event.getMember().getUser().getAvatarUrl())
+                .setFooter(event.getMember().getUser().getAsTag() + Constants.FOOTER_MESSAGE, event.getMember().getUser().getEffectiveAvatarUrl())
                 .build();
 
         event.getHook().sendMessageEmbeds(embed).queue();

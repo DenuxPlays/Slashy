@@ -7,6 +7,7 @@ import com.denux.slashy.commands.dao.GuildSlashSubCommandGroup;
 import com.denux.slashy.services.Constants;
 import com.denux.slashy.services.Database;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.ChannelType;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.events.ReadyEvent;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
@@ -143,6 +144,7 @@ public class SlashCommands extends ListenerAdapter {
     public void onSlashCommand(SlashCommandEvent event) {
         Bot.asyncPool.submit(() -> {
             try {
+                if (event.getChannelType() == ChannelType.PRIVATE) return;
                 var command = slashCommands.get(event.getName() + " " + event.getSubcommandGroup() + " " + event.getSubcommandName());
                 command.execute(event);
             } catch (Exception e) {

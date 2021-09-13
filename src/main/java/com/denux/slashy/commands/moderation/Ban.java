@@ -62,7 +62,7 @@ public class Ban extends GuildSlashCommand implements SlashCommandHandler {
                 .addField("Discord", "```"+ Objects.requireNonNull(event.getGuild()).getName()+"```", true)
                 .addField("ID", "```"+event.getUser().getId()+"```", false)
                 .addField("Reason", "```"+reason+"```", false)
-                .setFooter(event.getUser().getAsTag()+Constants.FOOTER_MESSAGE, event.getUser().getAvatarUrl())
+                .setFooter(event.getUser().getAsTag()+Constants.FOOTER_MESSAGE, event.getUser().getEffectiveAvatarUrl())
                 .build();
         if (member.getUser().hasPrivateChannel()) {
             member.getUser().openPrivateChannel().complete()

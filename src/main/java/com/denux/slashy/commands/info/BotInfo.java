@@ -27,14 +27,14 @@ public class BotInfo extends GuildSlashCommand implements SlashCommandHandler {
                 .setTitle("Botinfo")
                 .setColor(Constants.EMBED_GRAY)
                 .setTimestamp(Instant.now())
-                .setThumbnail(Bot.jda.getSelfUser().getAvatarUrl())
+                .setThumbnail(Bot.jda.getSelfUser().getEffectiveAvatarUrl())
                 .addField("Name","`" + Bot.jda.getSelfUser().getAsTag() + "`", false)
                 .addField("Library", "`JDA (Java)`", false)
                 .addField("Server Count", "`" + Bot.jda.getGuilds().size() + "`", false)
                 .addField("User Count", "`" + Bot.jda.getUsers().size() + "`", false)
                 .addField("Version", "`" + Constants.VERSION + "`", true)
                 .addField("Bot Owner", "`" + event.getJDA().retrieveUserById(Constants.OWNER_ID).complete().getAsTag() + "`", false)
-                .setFooter(event.getMember().getUser().getAsTag() + Constants.FOOTER_MESSAGE, event.getMember().getUser().getAvatarUrl())
+                .setFooter(event.getMember().getUser().getAsTag() + Constants.FOOTER_MESSAGE, event.getMember().getUser().getEffectiveAvatarUrl())
                 .build();
 
         event.getHook().sendMessageEmbeds(embed).queue();
