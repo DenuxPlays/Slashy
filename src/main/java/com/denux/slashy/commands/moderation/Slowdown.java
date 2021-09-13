@@ -1,11 +1,22 @@
 package com.denux.slashy.commands.moderation;
 
+import com.denux.slashy.commands.SlashCommandHandler;
+import com.denux.slashy.commands.dao.GuildSlashCommand;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
+import net.dv8tion.jda.api.interactions.commands.OptionType;
+import net.dv8tion.jda.api.interactions.commands.build.CommandData;
+import org.jetbrains.annotations.NotNull;
 
-public class Slowdown {
+public class Slowdown extends GuildSlashCommand implements SlashCommandHandler {
 
-    public void onSlowdown(SlashCommandEvent event) {
+    public Slowdown () {
+        this.commandData = new CommandData("slowdown", "Sets the slow mode for a channel.")
+                .addOption(OptionType.INTEGER, "seconds", "How long the slow mode would be.", true);
+    }
+
+    @Override
+    public void execute(@NotNull SlashCommandEvent event) {
 
         int seconds = (int) event.getOption("seconds").getAsLong();
 

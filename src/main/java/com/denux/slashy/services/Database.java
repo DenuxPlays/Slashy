@@ -3,6 +3,7 @@ import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
 import com.denux.slashy.Bot;
+import com.denux.slashy.SlashCommands;
 import com.denux.slashy.properties.ConfigString;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -21,6 +22,7 @@ import static com.mongodb.client.model.Filters.eq;
 
 public class Database {
 
+    private final org.slf4j.Logger logger = LoggerFactory.getLogger(Database.class);
     public static MongoClient mongoClient;
 
     //Creates a connection to the MongoDB Database
@@ -107,9 +109,9 @@ public class Database {
             collection.insertOne(doc);
 
             //Returning a feedback via the Logger Plugin
-            Bot.logger.info("Creating a Config with the guild id: "+guild.getId());
+            logger.info("Creating a Config with the guild id: "+guild.getId());
         }
-        else Bot.logger.error("Guild already has a config.");
+        else logger.error("Guild already has a config.");
     }
 
     //Sets |edits a Database Entry
@@ -126,7 +128,7 @@ public class Database {
        else {
 
            createConfig(guild);
-           Bot.logger.warn("Creating a Config for the Guild:"+guild.getId()+" | setDatabaseEntry");
+           logger.warn("Creating a Config for the Guild:"+guild.getId()+" | setDatabaseEntry");
 
            BasicDBObject setData = new BasicDBObject(path, newValue);
            BasicDBObject update = new BasicDBObject("$set", setData);

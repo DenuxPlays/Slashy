@@ -1,15 +1,25 @@
 package com.denux.slashy.commands.configuration.subcommands;
 
-import com.denux.slashy.commands.configuration.ConfigCommandHandler;
+import com.denux.slashy.commands.SlashCommandHandler;
+import com.denux.slashy.commands.dao.GuildSlashSubCommand;
 import com.denux.slashy.services.Database;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
+import net.dv8tion.jda.api.interactions.commands.OptionType;
+import net.dv8tion.jda.api.interactions.commands.build.SubcommandData;
+import org.jetbrains.annotations.NotNull;
 
-public class SetWarnLimit implements ConfigCommandHandler {
+public class SetWarnLimit extends GuildSlashSubCommand implements SlashCommandHandler {
+
+    public SetWarnLimit () {
+        this.subcommandData = new SubcommandData("setwarnlimit", "Sets the warn limit for your Server.")
+                .addOption(OptionType.INTEGER, "limit", "The max amount of warns a User can have before getting banned.", true)
+                .addOption(OptionType.BOOLEAN, "disabled", "Disables the warn limit for your Server.", false);
+    }
 
     @Override
-    public void execute(SlashCommandEvent event) {
+    public void execute(@NotNull SlashCommandEvent event) {
 
         event.deferReply().setEphemeral(true).queue();
 

@@ -1,17 +1,28 @@
 package com.denux.slashy.commands.info;
 
-import com.denux.slashy.services.Config;
+import com.denux.slashy.commands.SlashCommandHandler;
+import com.denux.slashy.commands.dao.GuildSlashCommand;
+import com.denux.slashy.services.Constants;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
+import net.dv8tion.jda.api.interactions.commands.OptionType;
+import net.dv8tion.jda.api.interactions.commands.build.CommandData;
+import org.jetbrains.annotations.NotNull;
 
 import java.time.Instant;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 
-public class Userinfo {
+public class Userinfo extends GuildSlashCommand implements SlashCommandHandler {
 
-    public void onUserinfo(SlashCommandEvent event) {
+    public Userinfo () {
+        this.commandData = new CommandData("userinfo", "Gives you a few information about a user.")
+                .addOption(OptionType.USER, "member", "Member you want the information from.", true);
+    }
+
+    @Override
+    public void execute(@NotNull SlashCommandEvent event) {
 
         event.deferReply().setEphemeral(true).queue();
 
@@ -23,13 +34,13 @@ public class Userinfo {
 
         var embed = new EmbedBuilder()
                 .setTitle("Userinfo for "+member.getUser().getAsTag())
-                .setColor(Config.EMBED_GREY)
+                .setColor(Constants.EMBED_GRAY)
                 .setTimestamp(Instant.now())
                 .addField("Name", "```"+member.getUser().getAsTag()+"```", false)
                 .addField("ID", "```"+member.getId()+"```", false)
                 .addField("Joined on", "```"+member.getTimeJoined().format(formatter)+"```", false)
                 .addField("Account created at", "```"+member.getUser().getTimeCreated().format(formatter)+"```", false)
-                .setFooter(event.getMember().getUser().getAsTag()+Config.FOOTER_MESSAGE, event.getMember().getUser().getAvatarUrl())
+                .setFooter(event.getMember().getUser().getAsTag()+ Constants.FOOTER_MESSAGE, event.getMember().getUser().getAvatarUrl())
                 .build();
 
         event.getHook().sendMessageEmbeds(embed).queue();

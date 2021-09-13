@@ -1,16 +1,26 @@
 package com.denux.slashy.commands.configuration.subcommands;
 
-import com.denux.slashy.commands.configuration.ConfigCommandHandler;
+import com.denux.slashy.commands.SlashCommandHandler;
+import com.denux.slashy.commands.dao.GuildSlashSubCommand;
 import com.denux.slashy.services.Database;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.GuildChannel;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
+import net.dv8tion.jda.api.interactions.commands.OptionType;
+import net.dv8tion.jda.api.interactions.commands.build.SubcommandData;
+import org.jetbrains.annotations.NotNull;
 
-public class SetStarboardChannel implements ConfigCommandHandler {
+public class SetStarboardChannel extends GuildSlashSubCommand implements SlashCommandHandler {
+
+    public SetStarboardChannel () {
+        this.subcommandData = new SubcommandData("setstarboardchannel", "Sets the Starboard Channel for your Server and activates it.")
+                .addOption(OptionType.CHANNEL, "starboardchannel", "The Channel you want to be the Starboard Channel.", true)
+                .addOption(OptionType.BOOLEAN, "disabled", "Disables the Starboard.", false);
+    }
 
     @Override
-    public void execute(SlashCommandEvent event) {
+    public void execute(@NotNull SlashCommandEvent event) {
 
         event.deferReply().setEphemeral(true).queue();
 

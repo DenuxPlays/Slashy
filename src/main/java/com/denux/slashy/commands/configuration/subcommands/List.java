@@ -1,18 +1,25 @@
 package com.denux.slashy.commands.configuration.subcommands;
 
-import com.denux.slashy.commands.configuration.ConfigCommandHandler;
-import com.denux.slashy.services.Config;
+import com.denux.slashy.commands.SlashCommandHandler;
+import com.denux.slashy.commands.dao.GuildSlashSubCommand;
+import com.denux.slashy.services.Constants;
 import com.denux.slashy.services.Database;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
+import net.dv8tion.jda.api.interactions.commands.build.SubcommandData;
+import org.jetbrains.annotations.NotNull;
 
 import java.time.Instant;
 
-public class List implements ConfigCommandHandler {
+public class List extends GuildSlashSubCommand implements SlashCommandHandler {
+
+    public List () {
+        this.subcommandData = new SubcommandData("list", "Gives you a overview of your settings.");
+    }
 
     @Override
-    public void execute(SlashCommandEvent event) {
+    public void execute(@NotNull SlashCommandEvent event) {
 
         event.deferReply().setEphemeral(true).queue();
 
@@ -80,7 +87,7 @@ public class List implements ConfigCommandHandler {
 
         var embed = new EmbedBuilder()
                 .setTitle("Config")
-                .setColor(Config.EMBED_GREY)
+                .setColor(Constants.EMBED_GRAY)
                 .setTimestamp(Instant.now())
                 .setThumbnail(event.getGuild().getIconUrl())
                 .addField("Log Channel", logChannel, true)
