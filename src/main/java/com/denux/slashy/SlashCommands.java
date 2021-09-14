@@ -155,6 +155,7 @@ public class SlashCommands extends ListenerAdapter {
                         .setTimestamp(new Date().toInstant())
                         .build();
                 event.getHook().sendMessageEmbeds(embed).setEphemeral(true).queue();
+                e.printStackTrace();
             }
         });
     }

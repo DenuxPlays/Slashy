@@ -19,6 +19,9 @@ import org.bson.Document;
 import org.slf4j.LoggerFactory;
 
 import java.time.Instant;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.util.Locale;
 
 import static com.mongodb.client.model.Filters.eq;
 
@@ -150,16 +153,29 @@ public class Database {
         MongoDatabase database = mongoClient.getDatabase("other");
         MongoCollection<Document> collection = database.getCollection("warns");
 
+        var time = DateTimeFormatter.ofPattern("EEEE, dd.MM.yyyy H:mm:s", Locale.ENGLISH).withZone(ZoneId.of("UTC")).format(Instant.now());
+
         Document doc = new Document()
                 .append("guildID", guild.getId())
                 .append("moderatorID", moderator.getId())
                 .append("memberID", member.getId())
                 .append("reason", reason)
-                .append("time", Instant.now());
+                .append("time", time);
 
         collection.insertOne(doc);
 
         logger.info("Creating warn to the Use: {} on the Guild: {}", member.getId(), guild.getId());
+    }
+
+    public long warnCount(Member member) {
+        MongoDatabase database = mongoClient.getDatabase("other");
+        MongoCollection<Document> warns = database.getCollection("warns");
+
+        BasicDBObject criteria = new BasicDBObject()
+                .append("guildID", member.getGuild().getId())
+                .append("memberID", member.getId());
+
+        return warns.countDocuments(criteria);
     }
 }
 

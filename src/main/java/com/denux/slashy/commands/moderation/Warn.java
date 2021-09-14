@@ -21,7 +21,7 @@ import java.util.Locale;
 
 public class Warn extends GuildSlashCommand implements SlashCommandHandler {
 
-    private final org.slf4j.Logger logger = LoggerFactory.getLogger(Unmute.class);
+    private final org.slf4j.Logger logger = LoggerFactory.getLogger(Warn.class);
 
     public Warn() {
         this.commandData = new CommandData("warn", "Warns a Member for a specific reason.")
