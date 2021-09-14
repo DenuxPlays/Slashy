@@ -4,8 +4,6 @@ import com.denux.slashy.commands.SlashCommandHandler;
 import com.denux.slashy.commands.dao.GuildSlashCommand;
 import com.denux.slashy.services.Constants;
 import com.denux.slashy.services.Database;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import com.mongodb.BasicDBObject;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
@@ -13,6 +11,7 @@ import com.mongodb.client.MongoDatabase;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.CommandData;
@@ -20,17 +19,17 @@ import org.bson.Document;
 
 import java.time.Instant;
 
-public class WarnList extends GuildSlashCommand implements SlashCommandHandler {
+public class ClearWarn extends GuildSlashCommand implements SlashCommandHandler {
 
-    public WarnList() {
-        this.commandData = new CommandData("warnlist", "Gives you the warns from the member.")
-                .addOption(OptionType.USER, "member", "The Member you want the warns from.", true);
+    public ClearWarn() {
+        this.commandData = new CommandData("clearwarns", "Clears all the warns from the member.")
+                .addOption(OptionType.USER, "member", "The member you want to clear the warns");
     }
 
     @Override
     public void execute(SlashCommandEvent event) {
 
-        event.deferReply(false).queue();
+        event.deferReply(true).queue();
 
         if (!event.getMember().hasPermission(Permission.MESSAGE_MANAGE)) {
 
@@ -59,26 +58,32 @@ public class WarnList extends GuildSlashCommand implements SlashCommandHandler {
         MongoCursor<Document> it = warns.find(criteria).iterator();
 
         while (it.hasNext()) {
-            JsonObject root = JsonParser.parseString(it.next().toJson()).getAsJsonObject();
-            String moderatorID = root.get("moderatorID").getAsString();
-            String moderator = event.getGuild().getMemberById(moderatorID).getUser().getAsTag();
-            String reason = root.get("reason").getAsString();
-            String date = root.get("time").getAsString();
-            stringBuilder.append("\n\n")
-                    .append("Moderator: ").append(moderator)
-                    .append("\nReason: ").append(reason)
-                    .append("\nDate: ").append(date);
+            warns.deleteOne(it.next());
         }
 
         var embed = new EmbedBuilder()
-                .setAuthor(member.getUser().getAsTag() + " | Warns", null, member.getUser().getEffectiveAvatarUrl())
-                .setDescription("```" + member.getUser().getAsTag() + " has been warned " + warnCount + " times so far." +
-                        "\n" + stringBuilder + "```")
-                .setColor(Constants.YELLOW)
-                .setFooter(event.getMember().getUser().getAsTag()+Constants.FOOTER_MESSAGE, event.getMember().getUser().getEffectiveAvatarUrl())
+                .setAuthor(member.getUser().getAsTag() + " | Cleared Warn(s)", null, member.getUser().getEffectiveAvatarUrl())
                 .setTimestamp(Instant.now())
+                .setColor(Constants.YELLOW)
+                .addField("Cleared warns", "```" + warnCount + "```", true)
+                .addField("Name", "```" + member.getUser().getAsTag() + "```", true)
+                .addField("Moderator", "```" + event.getMember().getUser().getAsTag() + "```", true)
+                .addField("ID", "```" + member.getId() + "```", false)
+                .setFooter(event.getMember().getUser().getAsTag() + Constants.FOOTER_MESSAGE, event.getMember().getUser().getEffectiveAvatarUrl())
                 .build();
 
-        event.getHook().sendMessageEmbeds(embed).queue();
+        if (member.getUser().hasPrivateChannel()) {
+            member.getUser().openPrivateChannel().complete()
+                    .sendMessageEmbeds(embed).queue();
+        }
+
+        String logChannelID = new Database().getConfig(event.getGuild(), "logChannel").getAsString();
+        if (!logChannelID.equals("0")) {
+            TextChannel logChannel = event.getGuild().getTextChannelById(logChannelID);
+            logChannel.sendMessageEmbeds(embed).queue();
+        } else {
+            event.getTextChannel().sendMessageEmbeds(embed).queue();
+        }
+        event.getHook().sendMessage("Done").setEphemeral(true).queue();
     }
 }
