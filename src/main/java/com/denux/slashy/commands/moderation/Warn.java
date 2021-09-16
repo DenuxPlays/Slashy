@@ -75,5 +75,24 @@ public class Warn extends GuildSlashCommand implements SlashCommandHandler {
             event.getTextChannel().sendMessageEmbeds(embed).queue();
         }
         event.getHook().sendMessage("Done").queue();
+
+        String warnLimit = new Database().getConfig(event.getGuild(), "warnLimit").getAsString();
+        int warnCount = new Database().warnCount(member);
+
+        if (warnLimit.equals("0")) {
+            return;
+        }
+        else if (warnCount >= Integer.parseInt(warnLimit)) {
+
+            if (member.getUser().hasPrivateChannel()) {
+                member.getUser().openPrivateChannel().complete()
+                        .sendMessage("**You have been banned from the guild: `"+member.getGuild().getName()+"` because you got too many warns.**").queue();
+            } else logger.warn("Cannot send the message to this user.");
+
+            event.getTextChannel().sendMessage("**The User: `"+member.getUser().getAsTag()+"` have been banned. (Too many warns)**").queue();
+
+            member.ban(1,"Too many warns.").queue();
+        }
+        else return;
     }
 }
