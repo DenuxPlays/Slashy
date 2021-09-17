@@ -1,5 +1,6 @@
 package com.denux.slashy;
 
+import com.denux.slashy.listener.TempBanListener;
 import com.denux.slashy.properties.ConfigString;
 import com.denux.slashy.services.Constants;
 import net.dv8tion.jda.api.JDA;

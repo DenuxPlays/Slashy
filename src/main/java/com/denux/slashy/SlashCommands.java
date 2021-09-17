@@ -4,6 +4,7 @@ import com.denux.slashy.commands.SlashCommandHandler;
 import com.denux.slashy.commands.dao.GuildSlashCommand;
 import com.denux.slashy.commands.dao.GuildSlashSubCommand;
 import com.denux.slashy.commands.dao.GuildSlashSubCommandGroup;
+import com.denux.slashy.listener.TempBanListener;
 import com.denux.slashy.services.Constants;
 import com.denux.slashy.services.Database;
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -138,6 +139,8 @@ public class SlashCommands extends ListenerAdapter {
         for (var guild : event.getJDA().getGuilds()) registerSlashCommands(guild);
         logger.info("{}[*]{} Command update completed\n",
                 Constants.TEXT_WHITE, Constants.TEXT_RESET);
+
+        new TempBanListener().TempUnBan();
     }
 
     @Override
