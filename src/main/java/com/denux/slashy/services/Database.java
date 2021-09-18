@@ -197,5 +197,25 @@ public class Database {
 
         logger.info("Creating tempBan for the User: {} on the Guild: {}", member.getId(), moderator.getGuild().getId());
     }
+
+    public void createTempMuteEntry(Member member, Member moderator, String reason, Instant unmuteTime) {
+
+        MongoDatabase database = mongoClient.getDatabase("other");
+        MongoCollection<Document> collection = database.getCollection("tempMute");
+
+        var muteTime = DateTimeFormatter.ofPattern("EEEE, dd.MM.yyyy H:mm:s", Locale.ENGLISH).withZone(ZoneId.of("UTC")).format(Instant.now());
+
+        Document doc = new Document()
+                .append("guildID", moderator.getGuild().getId())
+                .append("moderatorID", moderator.getId())
+                .append("memberID", member.getId())
+                .append("reason", reason)
+                .append("muteTime", muteTime)
+                .append("unmuteTime", unmuteTime);
+
+        collection.insertOne(doc);
+
+        logger.info("Creating tempMute for the User: {} on the Guild: {}", member.getId(), moderator.getGuild().getId());
+    }
 }
 

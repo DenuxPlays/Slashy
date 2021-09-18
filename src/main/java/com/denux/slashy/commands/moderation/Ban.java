@@ -32,7 +32,7 @@ public class Ban extends GuildSlashCommand implements SlashCommandHandler {
     public Ban() {
         this.commandData = new CommandData("ban", "Will ban the member permanently.")
                 .addOption(OptionType.USER, "member", "This member will be banned.", true)
-                .addOption(OptionType.STRING, "time", "Days, Hours, Minutes, Seconds", false)
+                .addOption(OptionType.STRING, "time", "days, hours, minutes, seconds", false)
                 .addOption(OptionType.STRING, "reason", "Reason why the member was banned.", false);
     }
 
@@ -179,6 +179,8 @@ public class Ban extends GuildSlashCommand implements SlashCommandHandler {
                 }
                 event.getHook().sendMessage("Done").queue();
             }
+
+            //Seconds
             else if (Arrays.asList(secondsValue).contains(split[1])) {
                 var unbanTime = Instant.now().plus(Long.parseLong(split[0]), ChronoUnit.SECONDS);
 

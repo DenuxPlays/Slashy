@@ -5,6 +5,7 @@ import com.denux.slashy.commands.dao.GuildSlashCommand;
 import com.denux.slashy.commands.dao.GuildSlashSubCommand;
 import com.denux.slashy.commands.dao.GuildSlashSubCommandGroup;
 import com.denux.slashy.listener.TempBanListener;
+import com.denux.slashy.listener.TempMuteListener;
 import com.denux.slashy.services.Constants;
 import com.denux.slashy.services.Database;
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -140,7 +141,9 @@ public class SlashCommands extends ListenerAdapter {
         logger.info("{}[*]{} Command update completed\n",
                 Constants.TEXT_WHITE, Constants.TEXT_RESET);
 
+        //TempBan and TempMute Listener
         new TempBanListener().TempUnBan();
+        new TempMuteListener().TempUnMute();
     }
 
     @Override
