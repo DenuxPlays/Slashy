@@ -39,7 +39,7 @@ public class Ban extends GuildSlashCommand implements SlashCommandHandler {
     @Override
     public void execute(@NotNull SlashCommandEvent event) {
 
-        event.deferReply().setEphemeral(true).queue();
+        event.deferReply(true).queue();
 
         //Checks the permissions from the member
         if (!event.getMember().hasPermission(Permission.BAN_MEMBERS)) {

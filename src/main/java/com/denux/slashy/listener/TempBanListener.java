@@ -79,7 +79,7 @@ public class TempBanListener {
                 }
 
             } catch (Exception exception) {
-                logger.error(exception.getClass().getSimpleName());
+                logger.warn(exception.getClass().getSimpleName());
             }
         }, 0, 30, TimeUnit.SECONDS);
     }
