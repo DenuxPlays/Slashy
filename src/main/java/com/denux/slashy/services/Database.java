@@ -183,11 +183,14 @@ public class Database {
         MongoDatabase database = mongoClient.getDatabase("other");
         MongoCollection<Document> collection = database.getCollection("tempBan");
 
+        var banTime = DateTimeFormatter.ofPattern("EEEE, dd.MM.yyyy H:mm:s", Locale.ENGLISH).withZone(ZoneId.of("UTC")).format(Instant.now());
+
         Document doc = new Document()
                 .append("guildID", moderator.getGuild().getId())
                 .append("moderatorID", moderator.getId())
                 .append("memberID", member.getId())
                 .append("reason", reason)
+                .append("banTime", banTime)
                 .append("unbanTime", unbanTime);
 
         collection.insertOne(doc);
