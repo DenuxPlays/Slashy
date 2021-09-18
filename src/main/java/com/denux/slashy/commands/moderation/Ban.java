@@ -208,7 +208,6 @@ public class Ban extends GuildSlashCommand implements SlashCommandHandler {
             }
             else {
 
-                //TODO better
                 event.getHook().sendMessage("**Invalid time indicator.**").queue();
             }
         }
