@@ -1,5 +1,6 @@
 package com.denux.slashy;
 
+import com.denux.slashy.listener.PresenceUpdater;
 import com.denux.slashy.listener.TempBanListener;
 import com.denux.slashy.listener.UserJoin;
 import com.denux.slashy.properties.ConfigString;
@@ -50,7 +51,12 @@ public class Bot {
     private static void addEventListeners(JDA jda) {
         jda.addEventListener(
                 new SlashCommands(),
-                new UserJoin()
+                new UserJoin(),
+                PresenceUpdater.standardActivities()
         );
+    }
+
+    public int userCount() {
+        return jda.getUsers().size();
     }
 }
