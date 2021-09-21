@@ -96,7 +96,7 @@ public class Ban extends GuildSlashCommand implements SlashCommandHandler {
             String[] split = time.split("(?<=\\D)(?=\\d)|(?<=\\d)(?=\\D)");
             String[] dayValue = new String[]{"days", "day", "d"};
             String[] hoursValue = new String[]{"hours", "hour", "h"};
-            String[] minutesValue = new String[]{"minutes", "minute", "m"};
+            String[] minutesValue = new String[]{"minutes", "minute", "m", "min"};
             String[] secondsValue = new String[]{"seconds", "s", "second", "sec"};
 
             //Days
@@ -205,9 +205,7 @@ public class Ban extends GuildSlashCommand implements SlashCommandHandler {
                     event.getTextChannel().sendMessageEmbeds(embed).queue();
                 }
                 event.getHook().sendMessage("Done").queue();
-            }
-            else {
-
+            } else {
                 event.getHook().sendMessage("**Invalid time indicator.**").queue();
             }
         }
