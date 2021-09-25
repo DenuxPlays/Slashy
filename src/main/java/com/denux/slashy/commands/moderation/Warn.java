@@ -77,7 +77,7 @@ public class Warn extends GuildSlashCommand implements SlashCommandHandler {
         event.getHook().sendMessage("Done").queue();
 
         String warnLimit = new Database().getConfig(event.getGuild(), "warnLimit").getAsString();
-        int warnCount = new Database().warnCount(member);
+        int warnCount = new Database().warnCount(member.getUser(), event.getGuild());
 
         if (warnLimit.equals("0")) {
             return;

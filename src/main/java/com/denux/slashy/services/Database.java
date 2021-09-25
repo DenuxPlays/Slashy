@@ -13,8 +13,7 @@ import com.mongodb.MongoClient;
 import com.mongodb.MongoClientURI;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
-import net.dv8tion.jda.api.entities.Guild;
-import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.*;
 import org.bson.Document;
 import org.slf4j.LoggerFactory;
 
@@ -167,13 +166,13 @@ public class Database {
         logger.info("Creating warn for the User: {} on the Guild: {}", member.getId(), guild.getId());
     }
 
-    public int warnCount(Member member) {
+    public int warnCount(User user, Guild guild) {
         MongoDatabase database = mongoClient.getDatabase("other");
         MongoCollection<Document> warns = database.getCollection("warns");
 
         BasicDBObject criteria = new BasicDBObject()
-                .append("guildID", member.getGuild().getId())
-                .append("memberID", member.getId());
+                .append("guildID", guild.getId())
+                .append("memberID", user.getId());
 
         return (int) warns.countDocuments(criteria);
     }
