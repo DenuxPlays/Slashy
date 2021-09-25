@@ -89,7 +89,6 @@ public class TempMuteListener {
                 Document doc = tempMute.find(criteria).first();
                 tempMute.deleteOne(doc);
             }
-
         }, 0, 30, TimeUnit.SECONDS);
     }
 }
