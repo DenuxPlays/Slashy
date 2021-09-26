@@ -225,7 +225,7 @@ public class Ban extends GuildSlashCommand implements SlashCommandHandler {
                 .addField("Discord", "```" + guild.getName() + "```", true)
                 .addField("ID", "```" + member.getUser().getId() + "```", false)
                 .addField("Reason", "```" + reason + "```", false)
-                .addField("Banned until", "```" + formatter + "```", false)
+                .addField("Banned until", "```" + formatter + " | UTC```", false)
                 .setFooter(moderator.getUser().getAsTag() + Constants.FOOTER_MESSAGE, moderator.getUser().getEffectiveAvatarUrl())
                 .build();
 
