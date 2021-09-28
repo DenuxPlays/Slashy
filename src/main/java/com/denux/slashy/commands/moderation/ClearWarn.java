@@ -24,7 +24,7 @@ public class ClearWarn extends GuildSlashCommand implements SlashCommandHandler 
 
     public ClearWarn() {
         this.commandData = new CommandData("clearwarns", "Clears all the warns from the member.")
-                .addOption(OptionType.USER, "member", "The member you want to clear the warns");
+                .addOption(OptionType.USER, "user", "The User you want to clear the warns");
     }
 
     @Override
@@ -33,12 +33,11 @@ public class ClearWarn extends GuildSlashCommand implements SlashCommandHandler 
         event.deferReply(true).queue();
 
         if (!event.getMember().hasPermission(Permission.MESSAGE_MANAGE)) {
-
             event.getHook().sendMessage("**You dont have the `manage message` permission.**").queue();
             return;
         }
 
-        User user = event.getOption("member").getAsUser();
+        User user = event.getOption("user").getAsUser();
 
         long warnCount = new Database().warnCount(user, event.getGuild());
 

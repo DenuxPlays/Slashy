@@ -80,6 +80,7 @@ public class TempMuteListener {
                         }
                     } catch (Exception exception) {
                         logger.error("Error caused. Deleting Document.");
+                        logger.error(exception.getClass().getSimpleName());
                         tempMute.deleteOne(doc);
                     }
                 }
