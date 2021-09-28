@@ -25,7 +25,7 @@ public class Warn extends GuildSlashCommand implements SlashCommandHandler {
 
     public Warn() {
         this.commandData = new CommandData("warn", "Warns a Member for a specific reason.")
-                .addOption(OptionType.USER, "member", "The member you want to warn", true)
+                .addOption(OptionType.USER, "member", "The Member you want to warn", true)
                 .addOption(OptionType.STRING, "reason", "The reason why you warned the user.", false);
     }
 
@@ -35,7 +35,6 @@ public class Warn extends GuildSlashCommand implements SlashCommandHandler {
         event.deferReply(true).queue();
 
         if (!event.getMember().hasPermission(Permission.MESSAGE_MANAGE)) {
-
             event.getHook().sendMessage("**You dont have the `manage message` permission.**").queue();
             return;
         }

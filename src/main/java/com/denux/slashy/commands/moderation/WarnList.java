@@ -24,7 +24,7 @@ public class WarnList extends GuildSlashCommand implements SlashCommandHandler {
 
     public WarnList() {
         this.commandData = new CommandData("warnlist", "Gives you the warns from the member.")
-                .addOption(OptionType.USER, "member", "The Member you want the warns from.", true);
+                .addOption(OptionType.USER, "user", "The User you want the warns from.", true);
     }
 
     @Override
@@ -33,12 +33,11 @@ public class WarnList extends GuildSlashCommand implements SlashCommandHandler {
         event.deferReply(false).queue();
 
         if (!event.getMember().hasPermission(Permission.MESSAGE_MANAGE)) {
-
             event.getHook().sendMessage("**You dont have the `manage message` permission.**").queue();
             return;
         }
 
-        User user = event.getOption("member").getAsUser();
+        User user = event.getOption("user").getAsUser();
 
         long warnCount = new Database().warnCount(user, event.getGuild());
 
