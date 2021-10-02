@@ -13,6 +13,7 @@ import net.dv8tion.jda.api.events.ReadyEvent;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.commands.build.CommandData;
+import net.dv8tion.jda.api.interactions.commands.build.SubcommandGroupData;
 import net.dv8tion.jda.api.interactions.commands.privileges.CommandPrivilege;
 import net.dv8tion.jda.api.requests.restaction.CommandListUpdateAction;
 import org.jetbrains.annotations.NotNull;
@@ -35,7 +36,6 @@ public class SlashCommands extends ListenerAdapter {
         this.slashPrivileges = new HashMap<>();
 
         CommandListUpdateAction updateAction = guild.updateCommands();
-        //CommandListUpdateAction updateAction = Bot.jda.updateCommands();
 
         Reflections cmds = new Reflections(Constants.COMMANDS_PACKAGE);
         Set<Class<? extends GuildSlashCommand>> classes = cmds.getSubTypesOf(GuildSlashCommand.class);
@@ -82,14 +82,16 @@ public class SlashCommands extends ListenerAdapter {
                             logger.warn("Class {} is missing SubCommandClasses. It will be ignored.", subGroupClazz.getName());
                             continue;
                         }
+
+                        SubcommandGroupData subCmdGroupData = subGroupInstance.getSubCommandGroupData();
+
                         for (var subClazz : subGroupInstance.getSubCommandClasses()) {
                             GuildSlashSubCommand subInstance = (GuildSlashSubCommand) subClazz.getDeclaredConstructor().newInstance();
                             if (subInstance.getSubCommandData() == null) {
                                 logger.warn("Class {} is missing SubCommandData. It will be ignored.", subClazz.getName());
                                 continue;
                             }
-                            cmdData.addSubcommandGroups(subGroupInstance.getSubCommandGroupData()
-                                    .addSubcommands(subInstance.getSubCommandData()));
+                            subCmdGroupData.addSubcommands(subInstance.getSubCommandData());
 
                             slashCommands.put(instance.getCommandData().getName() + " " +
                                     subGroupInstance.getSubCommandGroupData().getName() + " " +
@@ -99,6 +101,7 @@ public class SlashCommands extends ListenerAdapter {
                                     Constants.TEXT_WHITE, subGroupClazz.getSimpleName(), Constants.TEXT_RESET,
                                     subClazz.getSimpleName());
                         }
+                        cmdData.addSubcommandGroups(subCmdGroupData);
                     }
                 }
 
