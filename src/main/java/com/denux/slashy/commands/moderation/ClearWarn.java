@@ -12,6 +12,7 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.TextChannel;
+import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.CommandData;
@@ -23,7 +24,7 @@ public class ClearWarn extends GuildSlashCommand implements SlashCommandHandler 
 
     public ClearWarn() {
         this.commandData = new CommandData("clearwarns", "Clears all the warns from the member.")
-                .addOption(OptionType.USER, "member", "The member you want to clear the warns");
+                .addOption(OptionType.USER, "user", "The User you want to clear the warns");
     }
 
     @Override
@@ -32,14 +33,13 @@ public class ClearWarn extends GuildSlashCommand implements SlashCommandHandler 
         event.deferReply(true).queue();
 
         if (!event.getMember().hasPermission(Permission.MESSAGE_MANAGE)) {
-
             event.getHook().sendMessage("**You dont have the `manage message` permission.**").queue();
             return;
         }
 
-        Member member = event.getOption("member").getAsMember();
+        User user = event.getOption("user").getAsUser();
 
-        long warnCount = new Database().warnCount(member);
+        long warnCount = new Database().warnCount(user, event.getGuild());
 
         if (warnCount == 0) {
 
@@ -53,8 +53,8 @@ public class ClearWarn extends GuildSlashCommand implements SlashCommandHandler 
         StringBuilder stringBuilder = new StringBuilder();
 
         BasicDBObject criteria = new BasicDBObject()
-                .append("guildID", member.getGuild().getId())
-                .append("memberID", member.getId());
+                .append("guildID", event.getGuild().getId())
+                .append("memberID", user.getId());
         MongoCursor<Document> it = warns.find(criteria).iterator();
 
         while (it.hasNext()) {
@@ -62,18 +62,18 @@ public class ClearWarn extends GuildSlashCommand implements SlashCommandHandler 
         }
 
         var embed = new EmbedBuilder()
-                .setAuthor(member.getUser().getAsTag() + " | Cleared Warn(s)", null, member.getUser().getEffectiveAvatarUrl())
+                .setAuthor(user.getAsTag() + " | Cleared Warn(s)", null, user.getEffectiveAvatarUrl())
                 .setTimestamp(Instant.now())
                 .setColor(Constants.YELLOW)
                 .addField("Cleared warns", "```" + warnCount + "```", true)
-                .addField("Name", "```" + member.getUser().getAsTag() + "```", true)
+                .addField("Name", "```" + user.getAsTag() + "```", true)
                 .addField("Moderator", "```" + event.getMember().getUser().getAsTag() + "```", true)
-                .addField("ID", "```" + member.getId() + "```", false)
+                .addField("ID", "```" + user.getId() + "```", false)
                 .setFooter(event.getMember().getUser().getAsTag() + Constants.FOOTER_MESSAGE, event.getMember().getUser().getEffectiveAvatarUrl())
                 .build();
 
-        if (member.getUser().hasPrivateChannel()) {
-            member.getUser().openPrivateChannel().complete()
+        if (user.hasPrivateChannel()) {
+            user.openPrivateChannel().complete()
                     .sendMessageEmbeds(embed).queue();
         }
 

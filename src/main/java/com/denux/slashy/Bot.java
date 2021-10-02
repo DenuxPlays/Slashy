@@ -1,5 +1,8 @@
 package com.denux.slashy;
 
+import com.denux.slashy.listener.PresenceUpdater;
+import com.denux.slashy.listener.TempBanListener;
+import com.denux.slashy.listener.UserJoin;
 import com.denux.slashy.properties.ConfigString;
 import com.denux.slashy.services.Constants;
 import net.dv8tion.jda.api.JDA;
@@ -37,11 +40,23 @@ public class Bot {
 
         //Creating the bot instance
         jda = JDABuilder.createDefault(new ConfigString("token").getValue())
-                .addEventListeners(new SlashCommands())
                 .enableIntents(GatewayIntent.getIntents(GatewayIntent.ALL_INTENTS))
                 .enableCache(CacheFlag.ACTIVITY)
                 .setMemberCachePolicy(MemberCachePolicy.ALL)
                 .setStatus(OnlineStatus.DO_NOT_DISTURB)
                 .build();
+        addEventListeners(jda);
+    }
+
+    private static void addEventListeners(JDA jda) {
+        jda.addEventListener(
+                new SlashCommands(),
+                new UserJoin(),
+                PresenceUpdater.standardActivities()
+        );
+    }
+
+    public int userCount() {
+        return jda.getUsers().size();
     }
 }

@@ -12,7 +12,7 @@ import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoDatabase;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
-import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.CommandData;
@@ -24,7 +24,7 @@ public class WarnList extends GuildSlashCommand implements SlashCommandHandler {
 
     public WarnList() {
         this.commandData = new CommandData("warnlist", "Gives you the warns from the member.")
-                .addOption(OptionType.USER, "member", "The Member you want the warns from.", true);
+                .addOption(OptionType.USER, "user", "The User you want the warns from.", true);
     }
 
     @Override
@@ -33,14 +33,13 @@ public class WarnList extends GuildSlashCommand implements SlashCommandHandler {
         event.deferReply(false).queue();
 
         if (!event.getMember().hasPermission(Permission.MESSAGE_MANAGE)) {
-
             event.getHook().sendMessage("**You dont have the `manage message` permission.**").queue();
             return;
         }
 
-        Member member = event.getOption("member").getAsMember();
+        User user = event.getOption("user").getAsUser();
 
-        long warnCount = new Database().warnCount(member);
+        long warnCount = new Database().warnCount(user, event.getGuild());
 
         if (warnCount == 0) {
 
@@ -54,8 +53,8 @@ public class WarnList extends GuildSlashCommand implements SlashCommandHandler {
         StringBuilder stringBuilder = new StringBuilder();
 
         BasicDBObject criteria = new BasicDBObject()
-                .append("guildID", member.getGuild().getId())
-                .append("memberID", member.getId());
+                .append("guildID", event.getGuild().getId())
+                .append("memberID", user.getId());
         MongoCursor<Document> it = warns.find(criteria).iterator();
 
         while (it.hasNext()) {
@@ -71,8 +70,8 @@ public class WarnList extends GuildSlashCommand implements SlashCommandHandler {
         }
 
         var embed = new EmbedBuilder()
-                .setAuthor(member.getUser().getAsTag() + " | Warns", null, member.getUser().getEffectiveAvatarUrl())
-                .setDescription("```" + member.getUser().getAsTag() + " has been warned " + warnCount + " times so far." +
+                .setAuthor(user.getAsTag() + " | Warns", null, user.getEffectiveAvatarUrl())
+                .setDescription("```" + user.getAsTag() + " has been warned " + warnCount + " times so far." +
                         "\n" + stringBuilder + "```")
                 .setColor(Constants.YELLOW)
                 .setFooter(event.getMember().getUser().getAsTag()+Constants.FOOTER_MESSAGE, event.getMember().getUser().getEffectiveAvatarUrl())

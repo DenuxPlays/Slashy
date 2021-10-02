@@ -25,7 +25,7 @@ public class Warn extends GuildSlashCommand implements SlashCommandHandler {
 
     public Warn() {
         this.commandData = new CommandData("warn", "Warns a Member for a specific reason.")
-                .addOption(OptionType.USER, "member", "The member you want to warn", true)
+                .addOption(OptionType.USER, "member", "The Member you want to warn", true)
                 .addOption(OptionType.STRING, "reason", "The reason why you warned the user.", false);
     }
 
@@ -35,7 +35,6 @@ public class Warn extends GuildSlashCommand implements SlashCommandHandler {
         event.deferReply(true).queue();
 
         if (!event.getMember().hasPermission(Permission.MESSAGE_MANAGE)) {
-
             event.getHook().sendMessage("**You dont have the `manage message` permission.**").queue();
             return;
         }
@@ -77,7 +76,7 @@ public class Warn extends GuildSlashCommand implements SlashCommandHandler {
         event.getHook().sendMessage("Done").queue();
 
         String warnLimit = new Database().getConfig(event.getGuild(), "warnLimit").getAsString();
-        int warnCount = new Database().warnCount(member);
+        int warnCount = new Database().warnCount(member.getUser(), event.getGuild());
 
         if (warnLimit.equals("0")) {
             return;
@@ -89,7 +88,13 @@ public class Warn extends GuildSlashCommand implements SlashCommandHandler {
                         .sendMessage("**You have been banned from the guild: `"+member.getGuild().getName()+"` because you got too many warns.**").queue();
             } else logger.warn("Cannot send the message to this user.");
 
-            event.getTextChannel().sendMessage("**The User: `"+member.getUser().getAsTag()+"` has been banned. (Too many warns)**").queue();
+            if (!logChannelID.equals("0")) {
+                TextChannel logChannel = event.getGuild().getTextChannelById(logChannelID);
+                logChannel.sendMessage("**The User: `"+member.getUser().getAsTag()+"` has been banned. (Too many warns)**").queue();
+                event.getTextChannel().sendMessage("**The User: `"+member.getUser().getAsTag()+"` has been banned. (Too many warns)**").queue();
+            } else {
+                event.getTextChannel().sendMessage("**The User: `"+member.getUser().getAsTag()+"` has been banned. (Too many warns)**").queue();
+            }
 
             member.ban(1,"Too many warns.").queue();
         }
